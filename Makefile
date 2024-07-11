@@ -6,14 +6,14 @@ NAME = libft_malloc_$(HOSTTYPE).so
 
 GENERIC = libft_malloc.so
 
-SRCS = srcs/ft_malloc.c
+SRCS = srcs/malloc.c
 
 OBJS = ${SRCS:.c=.o}
 
 LIBFT_FILE = libft/libft.a
 
 HEADERS =	includes/libft.h \
-			includes/ft_malloc.h
+			includes/malloc.h
 
 HEADERS_DIR = includes
 
