@@ -18,11 +18,11 @@ HEADERS =	includes/libft.h \
 HEADERS_DIR = includes
 
 $(NAME): $(LIBFT_FILE) $(OBJS) $(HEADERS)
-	gcc -shared $(OBJS) $(LIBFT_FILE) -o $@
+	gcc -g -shared $(OBJS) $(LIBFT_FILE) -o $@
 	ln -sf $@ $(GENERIC)
 
 $(OBJS): %.o: %.c $(HEADERS)
-	gcc -Wall -Wextra -Werror -fPIC -I$(HEADERS_DIR) -c $< -o $@
+	gcc -Wall -Wextra -Werror -g -fPIC -I$(HEADERS_DIR) -c $< -o $@
 
 $(LIBFT_FILE):
 	make -C libft

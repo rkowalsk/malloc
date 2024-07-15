@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include "malloc.h"
+#include <malloc.h>
 #include <sys/mman.h>
 
-int main(void)
+/*int main(void)
 {
 	void *a = mmap(NULL, 0x3000, PROT_READ | PROT_WRITE,
 		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
@@ -16,11 +16,11 @@ int main(void)
 	printf("%d\n", *(int *)(a + 0x2000));
 	printf("%d\n", *(int *)(a + 0x1000));
 	return(0);
-}
-
-/*int main(void)
-{
-	void *a = ft_malloc(666);
-	(void) a;
-	return (0);
 }*/
+
+int main(void)
+{
+	ft_malloc(16);
+	ft_malloc(10000);
+	return (0);
+}
