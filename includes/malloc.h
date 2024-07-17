@@ -25,11 +25,9 @@
 #define IS_TINY(value) (value & TINY_HEAP)
 #define IS_SMALL(value) (value & SMALL_HEAP)
 
-// When going through the free list, use this on an element to get its size
-#define L_CHUNK_SIZE(address_in_list) (* (long *) (address_in_list - 8) )
-
 // Unused chunk
 
+/*   mchunkptr  */
 /* size | flags */
 /*     fwd      */
 /*     bwd      */
@@ -39,7 +37,8 @@
 // the linked list doesn't loop (for now ?)
 struct	unused_chunk
 {
-	long	size;
+	unsigned long	prev_size;
+	unsigned long	size;
 	struct unused_chunk	*fwd;
 	struct unused_chunk	*bwd;
 };
@@ -52,13 +51,15 @@ struct	lists
 
 // extern struct lists lists;
 extern struct unused_chunk *first_free; // first free block
-pthread_mutex_t	mutex;
+// extern pthread_mutex_t	mutex;
 
 void	*ft_malloc(size_t size);
 void	*ft_realloc(void *ptr, size_t size);
 void	*ft_calloc(size_t nmemb, size_t size);
 void	ft_free(void *ptr);
 void	show_alloc_mem(void);
+int		initialize_malloc(void);
+void	print_list(struct unused_chunk *chunk);
 
 //	void *a = mmap(NULL, 1, PROT_READ | PROT_WRITE,
 //		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);

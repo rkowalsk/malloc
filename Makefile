@@ -6,7 +6,8 @@ NAME = libft_malloc_$(HOSTTYPE).so
 
 GENERIC = libft_malloc.so
 
-SRCS = srcs/malloc.c
+SRCS = srcs/malloc.c \
+	   srcs/init.c
 
 OBJS = ${SRCS:.c=.o}
 
