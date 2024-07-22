@@ -6,8 +6,6 @@ static long	get_preallocation_size(long chunk_size, long page_size)
 	long	total_chunks_size;
 
 	chunk_size = chunk_size + USED_CHUNK_METADATA_SIZE;
-	if (chunk_size < MIN)
-		chunk_size = MIN;
 	total_chunks_size = chunk_size * 100;
 	map_size = total_chunks_size / page_size;
 	map_size = (map_size + ((total_chunks_size % page_size) > 0)) * page_size;
@@ -40,8 +38,8 @@ static void	insert_new_chunks(struct unused_chunk *new_first,
 static int	preallocate_heap(long page_size, long heap_flag)
 {
 	long				map_size;
-	void				*address;
-	void				*end;
+	char				*address;
+	char				*end;
 	struct unused_chunk	*list_curr;
 	struct unused_chunk	*list_start;
 	long				chunk_payload_size;
@@ -57,18 +55,18 @@ static int	preallocate_heap(long page_size, long heap_flag)
 			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 	if (!address)
 		return (1);
-	*(long *)address = map_size | heap_flag;
+	* (long *) address = map_size | heap_flag;
 	dprintf(1, "%p\n", address);
-	address += HEAP_HEADER_SIZE;
 	full_chunk_size = chunk_payload_size + USED_CHUNK_METADATA_SIZE;
 	if (full_chunk_size < MIN)
 		full_chunk_size = MIN;
-	end = address + map_size - full_chunk_size + HEAP_HEADER_SIZE;
+	// potential segfault ?
+	end = address + map_size - full_chunk_size - HEAP_HEADER_SIZE;
 	list_start = NULL;
 	list_curr = NULL;
 	while (address < end)
 	{
-		chunk = address;
+		chunk = (struct unused_chunk *) address;
 		chunk->size = full_chunk_size | heap_flag;
 		// * (long *) (chunk + chunk_payload_size) = full_chunk_size;
 		if (!list_start)

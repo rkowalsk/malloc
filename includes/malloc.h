@@ -5,11 +5,13 @@
 #include <stdbool.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <stddef.h>
+#include <stdio.h>
 #include <sys/mman.h>
 
 // Sizes
-#define TINY 32
-#define SMALL 128
+#define TINY 40
+#define SMALL 136
 #define HEAP_HEADER_SIZE 8 // ou 16 ?
 #define USED_CHUNK_METADATA_SIZE 8
 #define UNUSED_CHUNK_METADATA_SIZE 32 // ou 24 ?
@@ -25,9 +27,26 @@
 #define IS_TINY(value) (value & TINY_HEAP)
 #define IS_SMALL(value) (value & SMALL_HEAP)
 
+// Checking the values of SMALL and TINY in case someone fails to do their job
+#if (TINY % 16 == 0 || TINY % 8 != 0)
+	#error "TINY is not properly aligned"
+#endif
+#if (SMALL % 16 == 0 || SMALL % 8 != 0)
+	#error "SMALL is not properly aligned"
+#endif
+#if (TINY < MIN - USED_CHUNK_METADATA_SIZE)
+	#error "TINY is too small"
+#endif
+#if (SMALL < MIN - USED_CHUNK_METADATA_SIZE)
+	#error "SMALL is too small"
+#endif
+#if (TINY >= SMALL)
+	#error "TINY is ≥ SMALL bruh..."
+#endif
+
 // Unused chunk
 
-/*   mchunkptr  */
+/*   mchunkptr  */ // doesn't really exist, just the beginning of the chunk
 /* size | flags */
 /*     fwd      */
 /*     bwd      */
@@ -60,6 +79,9 @@ void	ft_free(void *ptr);
 void	show_alloc_mem(void);
 int		initialize_malloc(void);
 void	print_list(struct unused_chunk *chunk);
+size_t	align_size(size_t size);
+void	print_list(struct unused_chunk *chunk);
+void	print_chunk(struct unused_chunk *chunk);
 
 //	void *a = mmap(NULL, 1, PROT_READ | PROT_WRITE,
 //		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);

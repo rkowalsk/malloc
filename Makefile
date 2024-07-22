@@ -7,7 +7,8 @@ NAME = libft_malloc_$(HOSTTYPE).so
 GENERIC = libft_malloc.so
 
 SRCS = srcs/malloc.c \
-	   srcs/init.c
+	   srcs/init.c \
+	   srcs/utils.c
 
 OBJS = ${SRCS:.c=.o}
 
@@ -23,7 +24,7 @@ $(NAME): $(LIBFT_FILE) $(OBJS) $(HEADERS)
 	ln -sf $@ $(GENERIC)
 
 $(OBJS): %.o: %.c $(HEADERS)
-	gcc -Wall -Wextra -Werror -g -fPIC -I$(HEADERS_DIR) -c $< -o $@
+	gcc -Wall -Wextra -Werror -Werror=pointer-arith -g -fPIC -I$(HEADERS_DIR) -c $< -o $@
 
 $(LIBFT_FILE):
 	make -C libft
