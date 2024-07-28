@@ -98,6 +98,6 @@ int	initialize_malloc(void)
 		return (1);
 	if (preallocate_heap(page_size, SMALL_HEAP))
 		return (1);
-	print_list(first_free);
+	// print_list(first_free);
 	return (0);
 }

@@ -13,10 +13,12 @@ size_t	align_size(size_t size)
 
 void	print_chunk(struct unused_chunk *chunk)
 {
-		dprintf(1, "Block -> size: %ld", chunk->size & SIZE_MASK);
+		dprintf(1, "Block -> address: %p", chunk);
+		dprintf(1, ", size: %ld", chunk->size & SIZE_MASK);
 		dprintf(1, ", usable size: %ld",
 				(chunk->size & SIZE_MASK) - USED_CHUNK_METADATA_SIZE);
-		dprintf(1, ", address : %p", chunk);
+		dprintf(1, ", bwd : %p", chunk->bwd);
+		dprintf(1, ", fwd : %p", chunk->fwd);
 		if (IS_TINY(chunk->size))
 			dprintf(1, ", TINY");
 		else if (IS_SMALL(chunk->size))

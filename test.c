@@ -41,28 +41,56 @@ int main(void)
 	}
 	return (0);
 }
+
 */
+
+void cspam(char *start, char c, int size)
+{
+	int i = 0;
+	while (i < size)
+	{
+		start[i] = c;
+		i++;
+	}
+}
+
 int main(void)
 {
-	void *a;
 	int i = 2;
+	char *a;
+	struct unused_chunk *b;
 	while (i < 10000)
 	{
 		a = ft_malloc(i);
+		dprintf(1, "malloc size = %d", i);
 		if (!a)
 		{
 			perror("malloc");
 			return (2);
 		}
-		dprintf(1, "address = %p | aligned ? %d | i = %5d | size = %lu\n", a, ((long) a % 16) == 0, i, (* (unsigned long *) (a - 8)) & 0xFFFFFFFFFFFFFFF8);
-		((char *) a)[0] = 'A';
-		((char *) a)[i - 1] = 'A';
-		i += 2;
+		b = (void *) (a - 16);
+		dprintf(1, " | address malloc = %p | address struct = %p | aligned ? %d | size = %lu", a, b, ((unsigned long)a % 16) == 0, b->size & 0xFFFFFFFFFFFFFFF8);
+		cspam(a, 'A', i - 1);
+		a[i - 1] = 0;
+		dprintf(1, " | stored string size = %ld\n", strlen(a));
+		i += 1;
 	}
+	print_list(first_free);
 	return (0);
 }
 
 /*
+int main(void)
+{
+	void *a;
+	void *b;
+
+	a = ft_malloc(3500);
+	b = ft_malloc(200);
+	dprintf(1, "a = %p, b = %p\n", a, b);
+	return (0);
+}
+
 int main(void)
 {
 	void	*a;
