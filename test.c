@@ -3,6 +3,7 @@
 #include <malloc.h>
 #include <errno.h>
 #include <sys/mman.h>
+#include "ft_malloc.h"
 
 /*int main(void)
 {
@@ -24,9 +25,16 @@
 {
 	printf("%ld\n", new_heap_size(0));
 	return (0);
-}*/
 
-/*
+int main(void)
+{
+	for (int i = 0; i < 200; i++)
+		ft_malloc(35);
+	for (int i = 0; i < 2000; i++)
+		ft_malloc(i);
+	return (0);
+}
+
 int main(void)
 {
 	char *truc = malloc(0);
@@ -41,7 +49,6 @@ int main(void)
 	}
 	return (0);
 }
-
 */
 
 void cspam(char *start, char c, int size)
@@ -75,7 +82,7 @@ int main(void)
 		dprintf(1, " | stored string size = %ld\n", strlen(a));
 		i += 1;
 	}
-	print_list(first_free);
+	print_list(lists.free);
 	return (0);
 }
 
@@ -130,5 +137,14 @@ int	main(void)
 	dprintf(1, "%lu\n", ((struct unused_chunk *) &(a->size) - a));
 	dprintf(1, "%lu\n", ((struct unused_chunk *) &(a->prev_size) - a));
 	return (0);
+}
+
+int main(void)
+{
+	void *truc = ft_malloc(2);
+	if (!truc)
+		perror("ft_malloc");
+	ft_free(truc);
+	print_list(lists.free);
 }
 */

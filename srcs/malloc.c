@@ -1,71 +1,44 @@
-#include "malloc.h"
+#include "ft_malloc.h"
 
-// struct lists lists;
-struct unused_chunk *first_free;
+struct lists lists;
+//struct unused_chunk	*first_free;
+pthread_mutex_t		mutex;
 
-void	insert_free_list(struct unused_chunk *chunk)
-{
-	struct unused_chunk	*curr;
-
-	if (!first_free)
-		first_free = chunk;
-	else
-	{
-		curr = first_free;
-		while (curr->fwd && curr->fwd->size < (chunk->size & SIZE_MASK))
-			curr = curr->fwd;
-		chunk->fwd = curr->fwd;
-		chunk->bwd = curr;
-		if (curr->fwd)
-			curr->fwd->bwd = chunk;
-		curr->fwd = chunk;
-	}
-}
-
-void	remove_free_list(struct unused_chunk *chunk)
-{
-	if (chunk->fwd)
-		chunk->fwd->bwd = chunk->bwd;
-	if (chunk->bwd)
-		chunk->bwd->fwd = chunk->fwd;
-	chunk->size |= USED_CHUNK;
-	if (chunk == first_free)
-		first_free = chunk->fwd;
-	//	* (long *) (chunk + 16) = 0x666;
-}
-
+// the address of big chunk must be the beginning of the free space
 void	*split_chunk(void *big_chunk, size_t big_size, size_t size)
 {
 	unsigned long		*chunk;
 	size_t				leftover_size;
 	struct unused_chunk	*leftover;
 
-	chunk = (unsigned long *) ((char *) big_chunk + HEAP_HEADER_SIZE);
-	leftover_size = big_size - size - HEAP_HEADER_SIZE;
+	chunk = (unsigned long *) big_chunk;
+	leftover_size = big_size - size;
 	if (leftover_size >= MIN)
 	{
-		leftover = (struct unused_chunk *) ((char *)big_chunk + size);
+		leftover = (struct unused_chunk *)
+			((char *) big_chunk + size - MCHUNKPTR_SIZE);
 		leftover->size = leftover_size;
 		insert_free_list(leftover);
 		*chunk = size | USED_CHUNK;
 	}
 	else
-		*chunk = (big_size - HEAP_HEADER_SIZE) | USED_CHUNK;
-	return ((char *) chunk - HEAP_HEADER_SIZE);
+		*chunk = big_size | USED_CHUNK;
+	return ((char *) chunk - MCHUNKPTR_SIZE);
 }
 
 struct unused_chunk	*get_free_list(size_t size)
 {
 	struct unused_chunk	*curr;
 
-	curr = first_free;
+	curr = lists.free;
 	while (curr && (curr->size & SIZE_MASK) < size)
 		curr = curr->fwd;
 	if (curr)
 	{
 		remove_free_list(curr);
 		if (!IS_SMALL(curr->size) && !IS_TINY(curr->size))
-			curr = split_chunk(curr, curr->size & SIZE_MASK, size);
+			curr = split_chunk((char *) curr + MCHUNKPTR_SIZE,
+					curr->size & SIZE_MASK, size);
 	}
 	return (curr);
 }
@@ -97,7 +70,48 @@ void	*allocate_chunk(size_t size)
 		return (NULL);
 	long_ptr = (unsigned long *) heap;
 	*long_ptr = heap_size;
-	return (split_chunk(heap, heap_size - HEAP_HEADER_SIZE, size));
+	insert_heap_list((struct heap *) heap);
+	return (split_chunk(heap + HEAP_HEADER_SIZE, heap_size - HEAP_HEADER_SIZE,
+			size));
+}
+
+struct unused_chunk	*get_new_chunk(size_t size)
+{
+	long				page_size;
+	struct unused_chunk	*chunk;
+
+	page_size = sysconf(_SC_PAGESIZE);
+	if (page_size == -1)
+		return (NULL);
+	if (size <= TINY)
+	{
+		pthread_mutex_lock(&mutex);
+		if (preallocate_heap(page_size, TINY_HEAP))
+		{
+			pthread_mutex_unlock(&mutex);
+			return (NULL);
+		}
+		chunk = get_free_list(size);
+		pthread_mutex_unlock(&mutex);
+	}
+	else if (size <= SMALL)
+	{
+		pthread_mutex_lock(&mutex);
+		if (preallocate_heap(page_size, SMALL_HEAP))
+		{
+			pthread_mutex_unlock(&mutex);
+			return (NULL);
+		}
+		chunk = get_free_list(size);
+		pthread_mutex_unlock(&mutex);
+	}
+	else
+	{
+		pthread_mutex_lock(&mutex);
+		chunk = allocate_chunk(size);
+		pthread_mutex_unlock(&mutex);
+	}
+	return (chunk);
 }
 
 void	*ft_malloc(size_t size)
@@ -105,19 +119,19 @@ void	*ft_malloc(size_t size)
 	static bool			initialized = 0;
 	struct unused_chunk	*chunk;
 
+	pthread_mutex_lock(&mutex);
 	if (!initialized)
 	{
 		if (initialize_malloc())
 			return (NULL);
 		initialized = 1;
 	}
-	//	dprintf(1, "%zd ", size);
+	pthread_mutex_unlock(&mutex);
 	size = align_size(size);
-	dprintf(1, "%zd\n", size);
+	pthread_mutex_lock(&mutex);
 	chunk = get_free_list(size);
+	pthread_mutex_unlock(&mutex);
 	if (!chunk)
-		chunk = allocate_chunk(size);
-	//	print_list(first_free);
-	//	print_chunk(chunk);
-	return ((char *) chunk + USED_CHUNK_METADATA_SIZE + HEAP_HEADER_SIZE); // + 16
+		chunk = get_new_chunk(size);
+	return ((char *) chunk + USED_CHUNK_METADATA_SIZE + MCHUNKPTR_SIZE); //+16
 }

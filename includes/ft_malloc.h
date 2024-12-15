@@ -8,11 +8,13 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <sys/mman.h>
+#include <pthread.h>
 
 // Sizes
 #define TINY 40
 #define SMALL 136
-#define HEAP_HEADER_SIZE 8 // ou 16 ?
+#define HEAP_HEADER_SIZE 24
+#define MCHUNKPTR_SIZE 8
 #define USED_CHUNK_METADATA_SIZE 8
 #define UNUSED_CHUNK_METADATA_SIZE 32 // ou 24 ?
 #define MIN UNUSED_CHUNK_METADATA_SIZE
@@ -62,15 +64,23 @@ struct	unused_chunk
 	struct unused_chunk	*bwd;
 };
 
-struct	lists
+struct heap
 {
-	void	*free;
-	void	*heaps;
+	unsigned long	size;
+	struct heap		*fwd;
+	struct heap		*bwd;
 };
 
-// extern struct lists lists;
-extern struct unused_chunk *first_free; // first free block
-// extern pthread_mutex_t	mutex;
+struct	lists
+{
+	struct unused_chunk	*free;
+	struct heap			*heaps;
+};
+
+// TODO: replace all longs with fixed-width integers ?
+//extern struct unused_chunk *first_free; // first free block
+extern struct lists		lists;
+extern pthread_mutex_t	mutex;
 
 void	*ft_malloc(size_t size);
 void	*ft_realloc(void *ptr, size_t size);
@@ -82,6 +92,10 @@ void	print_list(struct unused_chunk *chunk);
 size_t	align_size(size_t size);
 void	print_list(struct unused_chunk *chunk);
 void	print_chunk(struct unused_chunk *chunk);
+int		preallocate_heap(long page_size, long heap_flag);
+void	insert_free_list(struct unused_chunk *chunk);
+void	remove_free_list(struct unused_chunk *chunk);
+void	insert_heap_list(struct heap *heap);
 
 //	void *a = mmap(NULL, 1, PROT_READ | PROT_WRITE,
 //		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);

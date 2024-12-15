@@ -7,7 +7,11 @@ NAME = libft_malloc_$(HOSTTYPE).so
 GENERIC = libft_malloc.so
 
 SRCS = srcs/malloc.c \
+	   srcs/free.c \
 	   srcs/init.c \
+	   srcs/prealloc.c \
+	   srcs/free_list.c \
+	   srcs/heap_list.c \
 	   srcs/utils.c
 
 OBJS = ${SRCS:.c=.o}
@@ -15,7 +19,7 @@ OBJS = ${SRCS:.c=.o}
 LIBFT_FILE = libft/libft.a
 
 HEADERS =	includes/libft.h \
-			includes/malloc.h
+			includes/ft_malloc.h
 
 HEADERS_DIR = includes
 
