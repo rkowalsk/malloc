@@ -6,7 +6,7 @@ void	ft_free(void *ptr)
 
 	if (!ptr)
 		return;
-	chunk = (struct unused_chunk *) ((char *) ptr - (MCHUNKPTR_SIZE + UNUSED_CHUNK_METADATA_SIZE));
+	chunk = (struct unused_chunk *) ((char *) ptr - (MCHUNKPTR_SIZE + USED_CHUNK_METADATA_SIZE));
 	chunk->size -= USED_CHUNK;
 	pthread_mutex_lock(&mutex);
 	insert_free_list(chunk);
