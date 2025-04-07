@@ -2,7 +2,7 @@
 
 struct lists lists;
 //struct unused_chunk	*first_free;
-pthread_mutex_t		mutex;
+pthread_mutex_t		mutex = PTHREAD_MUTEX_INITIALIZER;
 
 // the address of big chunk must be the beginning of the free space
 void	*split_chunk(void *big_chunk, size_t big_size, size_t size)
@@ -123,7 +123,10 @@ void	*ft_malloc(size_t size)
 	if (!initialized)
 	{
 		if (initialize_malloc())
+		{
+			pthread_mutex_unlock(&mutex);
 			return (NULL);
+		}
 		initialized = 1;
 	}
 	pthread_mutex_unlock(&mutex);
@@ -133,5 +136,7 @@ void	*ft_malloc(size_t size)
 	pthread_mutex_unlock(&mutex);
 	if (!chunk)
 		chunk = get_new_chunk(size);
+	if (!chunk)
+		return (NULL);
 	return ((char *) chunk + USED_CHUNK_METADATA_SIZE + MCHUNKPTR_SIZE); //+16
 }
