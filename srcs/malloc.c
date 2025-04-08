@@ -1,7 +1,7 @@
 #include "ft_malloc.h"
 
-struct lists lists;
-//struct unused_chunk	*first_free;
+struct lists		lists;
+bool				initialized = 0;
 pthread_mutex_t		mutex = PTHREAD_MUTEX_INITIALIZER;
 
 // the address of big chunk must be the beginning of the free space
@@ -36,7 +36,7 @@ struct unused_chunk	*get_free_list(size_t size)
 	if (curr)
 	{
 		remove_free_list(curr);
-		if (!IS_SMALL(curr->size) && !IS_TINY(curr->size))
+		if (!IS_PREALLOC(curr->size))
 			curr = split_chunk((char *) curr + MCHUNKPTR_SIZE,
 					curr->size & SIZE_MASK, size);
 	}
@@ -86,7 +86,7 @@ struct unused_chunk	*get_new_chunk(size_t size)
 	if (size <= TINY)
 	{
 		pthread_mutex_lock(&mutex);
-		if (preallocate_heap(page_size, TINY_HEAP))
+		if (preallocate_heap(page_size, true))
 		{
 			pthread_mutex_unlock(&mutex);
 			return (NULL);
@@ -97,7 +97,7 @@ struct unused_chunk	*get_new_chunk(size_t size)
 	else if (size <= SMALL)
 	{
 		pthread_mutex_lock(&mutex);
-		if (preallocate_heap(page_size, SMALL_HEAP))
+		if (preallocate_heap(page_size, false))
 		{
 			pthread_mutex_unlock(&mutex);
 			return (NULL);
@@ -116,7 +116,6 @@ struct unused_chunk	*get_new_chunk(size_t size)
 
 void	*ft_malloc(size_t size)
 {
-	static bool			initialized = 0;
 	struct unused_chunk	*chunk;
 
 	pthread_mutex_lock(&mutex);

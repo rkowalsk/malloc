@@ -23,10 +23,8 @@ void	print_chunk(struct unused_chunk *chunk)
 		dprintf(1, ", UNUSED");
 	dprintf(1, ", bwd : %p", chunk->bwd);
 	dprintf(1, ", fwd : %p", chunk->fwd);
-	if (IS_TINY(chunk->size))
-		dprintf(1, ", TINY");
-	else if (IS_SMALL(chunk->size))
-		dprintf(1, ", SMALL");
+	if (IS_PREALLOC(chunk->size))
+		dprintf(1, ", TINY/SMALL");
 	dprintf(1, "\n");
 }
 

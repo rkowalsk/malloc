@@ -35,8 +35,8 @@ static void	insert_new_chunks(struct unused_chunk *new_first,
 	}
 }
 
-// allocates a TINY or SMALL heap (give it the right flag)
-int	preallocate_heap(long page_size, long heap_flag)
+// allocates a TINY or SMALL heap (give it 1 for tiny and 0 for small)
+int	preallocate_heap(long page_size, bool is_tiny)
 {
 	long				map_size;
 	char				*address;
@@ -48,7 +48,7 @@ int	preallocate_heap(long page_size, long heap_flag)
 	long				full_chunk_size;
 	struct unused_chunk	*chunk;
 
-	if (IS_TINY(heap_flag))
+	if (is_tiny)
 		chunk_payload_size = TINY;
 	else
 		chunk_payload_size = SMALL;
@@ -58,7 +58,7 @@ int	preallocate_heap(long page_size, long heap_flag)
 	dprintf(1, "heap address = %p\n", address);
 	if (!address)
 		return (1);
-	* (long *) address = map_size | heap_flag;
+	* (long *) address = map_size | PREALLOCATED;
 	full_chunk_size = chunk_payload_size + USED_CHUNK_METADATA_SIZE;
 	if (full_chunk_size < MIN)
 		full_chunk_size = MIN;
@@ -71,7 +71,7 @@ int	preallocate_heap(long page_size, long heap_flag)
 	while (curr < end)
 	{
 		chunk = (struct unused_chunk *) curr;
-		chunk->size = full_chunk_size | heap_flag;
+		chunk->size = full_chunk_size | PREALLOCATED;
 		// * (long *) (chunk + chunk_payload_size) = full_chunk_size;
 		if (!list_start)
 		{

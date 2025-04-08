@@ -19,15 +19,15 @@
 #define UNUSED_CHUNK_METADATA_SIZE 32 // ou 24 ?
 #define MIN UNUSED_CHUNK_METADATA_SIZE
 
-// Flags
+// Flags and masks
 #define USED_CHUNK 0b001
-#define TINY_HEAP 0b010
-#define SMALL_HEAP 0b100
+#define PREALLOCATED 0b010
+#define PREV_USED 0b100
 #define SIZE_MASK 0xFFFFFFFFFFFFFFF8
 
 #define IS_USED(value) (value & USED_CHUNK)
-#define IS_TINY(value) (value & TINY_HEAP)
-#define IS_SMALL(value) (value & SMALL_HEAP)
+#define IS_PREALLOC(value) (value & PREALLOCATED)
+#define IS_PREV_USED(value) (value & PREV_USED)
 
 // Checking the values of SMALL and TINY in case someone fails to do their job
 #if (TINY % 16 == 0 || TINY % 8 != 0)
@@ -92,7 +92,7 @@ void	print_list(struct unused_chunk *chunk);
 size_t	align_size(size_t size);
 void	print_list(struct unused_chunk *chunk);
 void	print_chunk(struct unused_chunk *chunk);
-int		preallocate_heap(long page_size, long heap_flag);
+int		preallocate_heap(long page_size, bool is_tiny);
 void	insert_free_list(struct unused_chunk *chunk);
 void	remove_free_list(struct unused_chunk *chunk);
 void	insert_heap_list(struct heap *heap);

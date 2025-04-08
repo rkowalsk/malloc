@@ -9,9 +9,9 @@ int	initialize_malloc(void)
 	page_size = sysconf(_SC_PAGESIZE);
 	if (page_size == -1)
 		return (1);
-	if (preallocate_heap(page_size, TINY_HEAP))
+	if (preallocate_heap(page_size, true))
 		return (1);
-	if (preallocate_heap(page_size, SMALL_HEAP))
+	if (preallocate_heap(page_size, false))
 		return (1);
 	return (0);
 }
