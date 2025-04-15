@@ -5,7 +5,8 @@ bool				initialized = 0;
 pthread_mutex_t		mutex = PTHREAD_MUTEX_INITIALIZER;
 
 // the address of big chunk must be the beginning of the free space
-void	*split_chunk(void *big_chunk, size_t big_size, size_t size)
+void	*split_chunk(void *big_chunk, size_t big_size, size_t size,
+		unsigned long prev_used)
 {
 	unsigned long		*chunk;
 	size_t				leftover_size;
@@ -17,12 +18,12 @@ void	*split_chunk(void *big_chunk, size_t big_size, size_t size)
 	{
 		leftover = (struct unused_chunk *)
 			((char *) big_chunk + size - MCHUNKPTR_SIZE);
-		leftover->size = leftover_size;
+		leftover->size = leftover_size | PREV_USED;
 		insert_free_list(leftover);
-		*chunk = size | USED_CHUNK;
+		*chunk = size | USED_CHUNK | prev_used;
 	}
 	else
-		*chunk = big_size | USED_CHUNK;
+		*chunk = big_size | USED_CHUNK | prev_used;
 	return ((char *) chunk - MCHUNKPTR_SIZE);
 }
 
@@ -38,7 +39,7 @@ struct unused_chunk	*get_free_list(size_t size)
 		remove_free_list(curr);
 		if (!IS_PREALLOC(curr->size))
 			curr = split_chunk((char *) curr + MCHUNKPTR_SIZE,
-					curr->size & SIZE_MASK, size);
+					curr->size & SIZE_MASK, size, curr->size & PREV_USED);
 	}
 	return (curr);
 }
@@ -72,7 +73,7 @@ void	*allocate_chunk(size_t size)
 	*long_ptr = heap_size;
 	insert_heap_list((struct heap *) heap);
 	return (split_chunk(heap + HEAP_HEADER_SIZE, heap_size - HEAP_HEADER_SIZE,
-			size));
+			size, PREV_USED));
 }
 
 struct unused_chunk	*get_new_chunk(size_t size)
@@ -133,7 +134,13 @@ void	*ft_malloc(size_t size)
 	pthread_mutex_lock(&mutex);
 	chunk = get_free_list(size);
 	pthread_mutex_unlock(&mutex);
-	if (!chunk)
+	if (chunk)
+	{
+		pthread_mutex_lock(&mutex);
+		update_next_neighbour(chunk, PREV_USED);
+		pthread_mutex_unlock(&mutex);
+	}
+	else
 		chunk = get_new_chunk(size);
 	if (!chunk)
 		return (NULL);

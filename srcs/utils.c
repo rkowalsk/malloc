@@ -11,6 +11,24 @@ size_t	align_size(size_t size)
 	return (size);
 }
 
+void	update_next_neighbour(struct unused_chunk *chunk, bool prev_used)
+{
+	struct unused_chunk	*neighbour;
+	struct heap			*heap;
+	char				*next_chunk;
+
+	heap = get_chunk_heap(chunk);
+	next_chunk = (char *) chunk + MCHUNKPTR_SIZE + (chunk->size & SIZE_MASK);
+	if (next_chunk < (char *) heap + heap->size)
+	{
+		neighbour = (struct unused_chunk *) (next_chunk - MCHUNKPTR_SIZE);
+		if (prev_used)
+			neighbour->size |= PREV_USED;
+		else
+			neighbour->size &= ~PREV_USED;
+	}
+}
+
 void	print_chunk(struct unused_chunk *chunk)
 {
 	dprintf(1, "Block -> address: %p", chunk);

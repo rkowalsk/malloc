@@ -49,7 +49,6 @@ int main(void)
 	}
 	return (0);
 }
-*/
 
 void cspam(char *start, char c, int size)
 {
@@ -66,7 +65,7 @@ int main(void)
 	int i = 2;
 	char *a;
 	struct unused_chunk *b;
-	while (i < 10000)
+	while (i < 1000)
 	{
 		a = ft_malloc(i);
 		dprintf(1, "malloc size = %d", i);
@@ -86,7 +85,6 @@ int main(void)
 	return (0);
 }
 
-/*
 int main(void)
 {
 	void *a;
@@ -148,3 +146,16 @@ int main(void)
 	print_list(lists.free);
 }
 */
+
+int main(void)
+{
+	char *m1, *m2;
+	m1 = ft_malloc(12);
+	print_list(lists.free);
+	m2 = ft_malloc(1200);
+	print_list(lists.free);
+	ft_free(m1);
+	ft_free(m2);
+	print_list(lists.free);
+	return (0);
+}

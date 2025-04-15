@@ -22,6 +22,8 @@
 // Flags and masks
 #define USED_CHUNK 0b001
 #define PREALLOCATED 0b010
+// PREV_USED isn't set for preallocated heap chunks because we
+// don't coallesce them anyway and flemme
 #define PREV_USED 0b100
 #define SIZE_MASK 0xFFFFFFFFFFFFFFF8
 
@@ -82,20 +84,22 @@ struct	lists
 extern struct lists		lists;
 extern pthread_mutex_t	mutex;
 
-void	*ft_malloc(size_t size);
-void	*ft_realloc(void *ptr, size_t size);
-void	*ft_calloc(size_t nmemb, size_t size);
-void	ft_free(void *ptr);
-void	show_alloc_mem(void);
-int		initialize_malloc(void);
-void	print_list(struct unused_chunk *chunk);
-size_t	align_size(size_t size);
-void	print_list(struct unused_chunk *chunk);
-void	print_chunk(struct unused_chunk *chunk);
-int		preallocate_heap(long page_size, bool is_tiny);
-void	insert_free_list(struct unused_chunk *chunk);
-void	remove_free_list(struct unused_chunk *chunk);
-void	insert_heap_list(struct heap *heap);
+void		*ft_malloc(size_t size);
+void		*ft_realloc(void *ptr, size_t size);
+void		*ft_calloc(size_t nmemb, size_t size);
+void		ft_free(void *ptr);
+void		show_alloc_mem(void);
+int			initialize_malloc(void);
+void		print_list(struct unused_chunk *chunk);
+size_t		align_size(size_t size);
+void		print_list(struct unused_chunk *chunk);
+void		print_chunk(struct unused_chunk *chunk);
+int			preallocate_heap(long page_size, bool is_tiny);
+void		insert_free_list(struct unused_chunk *chunk);
+void		remove_free_list(struct unused_chunk *chunk);
+void		insert_heap_list(struct heap *heap);
+struct heap	*get_chunk_heap(struct unused_chunk *chunk);
+void		update_next_neighbour(struct unused_chunk *chunk, bool prev_used);
 
 //	void *a = mmap(NULL, 1, PROT_READ | PROT_WRITE,
 //		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
