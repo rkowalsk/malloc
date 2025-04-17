@@ -3,6 +3,7 @@
 void	insert_free_list(struct unused_chunk *chunk)
 {
 	struct unused_chunk	*curr;
+	unsigned long		*prev_size;
 
 	if (!lists.free)
 		lists.free = chunk;
@@ -25,6 +26,8 @@ void	insert_free_list(struct unused_chunk *chunk)
 			curr->fwd->bwd = chunk;
 		curr->fwd = chunk;
 	}
+	prev_size = (unsigned long *) ((char *) chunk + (chunk->size & SIZE_MASK));
+	*prev_size = chunk->size;
 }
 
 void	remove_free_list(struct unused_chunk *chunk)
