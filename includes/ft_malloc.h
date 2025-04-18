@@ -56,11 +56,13 @@
 /*     bwd      */
 /*     size     */
 
+//prev_size isn't set for preallocated chunks because useless and flemme
+
 // just the header, we don't need the rest
 // the linked list doesn't loop (for now ?)
 struct	unused_chunk
 {
-	unsigned long	prev_size;
+	unsigned long	prev_size; // acutally the prev_size of the previous chunk
 	unsigned long	size;
 	struct unused_chunk	*fwd;
 	struct unused_chunk	*bwd;

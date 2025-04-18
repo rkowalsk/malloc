@@ -49,7 +49,7 @@ int main(void)
 	}
 	return (0);
 }
-
+*/
 void cspam(char *start, char c, int size)
 {
 	int i = 0;
@@ -65,7 +65,7 @@ int main(void)
 	int i = 2;
 	char *a;
 	struct unused_chunk *b;
-	while (i < 1000)
+	while (i < 10000)
 	{
 		a = ft_malloc(i);
 		dprintf(1, "malloc size = %d", i);
@@ -79,12 +79,13 @@ int main(void)
 		cspam(a, 'A', i - 1);
 		a[i - 1] = 0;
 		dprintf(1, " | stored string size = %ld\n", strlen(a));
+		ft_free(a);
 		i += 1;
 	}
 	print_list(lists.free);
 	return (0);
 }
-
+/*
 int main(void)
 {
 	void *a;
@@ -145,17 +146,19 @@ int main(void)
 	ft_free(truc);
 	print_list(lists.free);
 }
-*/
 
 int main(void)
 {
-	char *m1, *m2;
+	char *m1, *m2, *m3;
 	m1 = ft_malloc(12);
-	print_list(lists.free);
 	m2 = ft_malloc(1200);
-	print_list(lists.free);
+	m3 = ft_malloc(200);
 	ft_free(m1);
+	print_list(lists.free);
 	ft_free(m2);
+	print_list(lists.free);
+	ft_free(m3);
 	print_list(lists.free);
 	return (0);
 }
+*/
