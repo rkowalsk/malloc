@@ -1,5 +1,7 @@
 #include "ft_malloc.h"
 
+extern unsigned long	mmaped;
+
 struct unused_chunk *coallesce_previous(struct unused_chunk *chunk)
 {
 	struct unused_chunk *prev_chunk;
@@ -10,6 +12,8 @@ struct unused_chunk *coallesce_previous(struct unused_chunk *chunk)
 		prev_chunk->fwd->bwd = prev_chunk->bwd;
 	if (prev_chunk->bwd)
 		prev_chunk->bwd->fwd = prev_chunk->fwd;
+	if (lists.free == prev_chunk)
+		lists.free = prev_chunk->fwd;
 	prev_chunk->size += (SIZE_MASK & chunk->size);
 	return (prev_chunk);
 }
@@ -22,7 +26,7 @@ void	coallesce_next(struct unused_chunk *chunk)
 	heap = get_chunk_heap(chunk);
 	next_chunk = (struct unused_chunk *)
 		((char *) chunk + (SIZE_MASK & chunk->size));
-	if ((char *) next_chunk + MCHUNKPTR_SIZE > (char *) heap + heap->size)
+	if ((char *) next_chunk + MCHUNKPTR_SIZE >= (char *) heap + heap->size)
 		return;
 	if (IS_USED(next_chunk->size))
 		return;
@@ -30,6 +34,8 @@ void	coallesce_next(struct unused_chunk *chunk)
 		next_chunk->fwd->bwd = next_chunk->bwd;
 	if (next_chunk->bwd)
 		next_chunk->bwd->fwd = next_chunk->fwd;
+	if (lists.free == next_chunk)
+		lists.free = next_chunk->fwd;
 	chunk->size += next_chunk->size & SIZE_MASK;
 }
 
@@ -43,7 +49,11 @@ struct	unused_chunk *coallesce(struct unused_chunk *chunk)
 	return (chunk);
 }
 
-void	ft_free(void *ptr)
+#ifdef DEV
+	void	ft_free(void *ptr)
+#else
+	void	free(void *ptr)
+#endif
 {
 	struct unused_chunk	*chunk;
 

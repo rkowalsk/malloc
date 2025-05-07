@@ -115,7 +115,11 @@ struct unused_chunk	*get_new_chunk(size_t size)
 	return (chunk);
 }
 
-void	*ft_malloc(size_t size)
+#ifdef DEV
+	void	*ft_malloc(size_t size)
+#else
+	void	*malloc(size_t size)
+#endif
 {
 	struct unused_chunk	*chunk;
 
