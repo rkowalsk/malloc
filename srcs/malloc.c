@@ -2,6 +2,7 @@
 
 struct lists		lists;
 bool				initialized = 0;
+unsigned long		mmaped = 0;
 pthread_mutex_t		mutex = PTHREAD_MUTEX_INITIALIZER;
 
 // the address of big chunk must be the beginning of the free space
@@ -69,6 +70,7 @@ void	*allocate_chunk(size_t size)
 			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 	if (!heap)
 		return (NULL);
+	mmaped += heap_size;
 	long_ptr = (unsigned long *) heap;
 	*long_ptr = heap_size;
 	insert_heap_list((struct heap *) heap);

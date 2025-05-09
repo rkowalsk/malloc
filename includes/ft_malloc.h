@@ -13,6 +13,7 @@
 // Sizes
 #define TINY 40
 #define SMALL 136
+#define UNMAP_THRESHOLD 1048576 // 1MiB
 #define HEAP_HEADER_SIZE 24
 #define MCHUNKPTR_SIZE 8
 #define USED_CHUNK_METADATA_SIZE 8

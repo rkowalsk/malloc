@@ -18,7 +18,8 @@ struct unused_chunk *coallesce_previous(struct unused_chunk *chunk)
 	return (prev_chunk);
 }
 
-void	coallesce_next(struct unused_chunk *chunk)
+// return true if the 
+bool	coallesce_next(struct unused_chunk *chunk)
 {
 	struct heap			*heap;
 	struct unused_chunk *next_chunk;
@@ -27,9 +28,9 @@ void	coallesce_next(struct unused_chunk *chunk)
 	next_chunk = (struct unused_chunk *)
 		((char *) chunk + (SIZE_MASK & chunk->size));
 	if ((char *) next_chunk + MCHUNKPTR_SIZE >= (char *) heap + heap->size)
-		return;
+		return (false);
 	if (IS_USED(next_chunk->size))
-		return;
+		return (false);
 	if (next_chunk->fwd)
 		next_chunk->fwd->bwd = next_chunk->bwd;
 	if (next_chunk->bwd)
