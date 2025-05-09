@@ -18,7 +18,7 @@ struct unused_chunk *coallesce_previous(struct unused_chunk *chunk)
 	return (prev_chunk);
 }
 
-// return true if the 
+// return true if the heap got unmaped
 bool	coallesce_next(struct unused_chunk *chunk)
 {
 	struct heap			*heap;
@@ -65,8 +65,11 @@ struct	unused_chunk *coallesce(struct unused_chunk *chunk)
 	chunk->size -= USED_CHUNK;
 	pthread_mutex_lock(&mutex);
 	chunk = coallesce(chunk);
-	if (!IS_PREALLOC(chunk->size))
-		update_next_neighbour(chunk, 0);
-	insert_free_list(chunk);
+	if (chunk)
+	{
+		if (!IS_PREALLOC(chunk->size))
+			update_next_neighbour(chunk, 0);
+		insert_free_list(chunk);
+	}
 	pthread_mutex_unlock(&mutex);
 }
