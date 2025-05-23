@@ -28,7 +28,7 @@ bool	coallesce_next(struct unused_chunk *chunk)
 	next_chunk = (struct unused_chunk *)
 		((char *) chunk + (SIZE_MASK & chunk->size));
 	if ((char *) next_chunk + MCHUNKPTR_SIZE >= (char *) heap + heap->size)
-		return (false);
+		goto unmaping;
 	if (IS_USED(next_chunk->size))
 		return (false);
 	if (next_chunk->fwd)
@@ -38,6 +38,21 @@ bool	coallesce_next(struct unused_chunk *chunk)
 	if (lists.free == next_chunk)
 		lists.free = next_chunk->fwd;
 	chunk->size += next_chunk->size & SIZE_MASK;
+unmaping:
+	if (mmaped > UNMAP_THRESHOLD &&
+		(chunk->size & SIZE_MASK) == (heap->size & SIZE_MASK) - HEAP_HEADER_SIZE)
+	{
+		if (heap->fwd)
+			heap->fwd->bwd = heap->bwd;
+		if (heap->bwd)
+			heap->bwd->fwd = heap->fwd;
+		if (lists.heaps == heap)
+			lists.heaps = heap->fwd;
+		mmaped -= heap->size;
+		munmap(heap, heap->size);
+		return (true);
+	}
+	return (false);
 }
 
 struct	unused_chunk *coallesce(struct unused_chunk *chunk)
@@ -46,7 +61,8 @@ struct	unused_chunk *coallesce(struct unused_chunk *chunk)
 		return (chunk);
 	if (!IS_PREV_USED(chunk->size))
 		chunk = coallesce_previous(chunk);
-	coallesce_next(chunk);
+	if (coallesce_next(chunk))
+		return (NULL);
 	return (chunk);
 }
 
