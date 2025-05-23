@@ -125,6 +125,11 @@ struct unused_chunk	*get_new_chunk(size_t size)
 {
 	struct unused_chunk	*chunk;
 
+	if (size > PTRDIFF_MAX)
+	{
+		errno = ENOMEM;
+		return (NULL);
+	}
 	pthread_mutex_lock(&mutex);
 	if (!initialized)
 	{
