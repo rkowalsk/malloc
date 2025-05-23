@@ -8,7 +8,9 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <sys/mman.h>
-#include <pthread.h>
+#include <stddef.h>
+#include <limits.h>
+#include <stdint.h>
 
 // Sizes
 #define TINY 40
@@ -89,6 +91,7 @@ extern pthread_mutex_t	mutex;
 
 void		*ft_malloc(size_t size);
 void		*ft_realloc(void *ptr, size_t size);
+void		*ft_reallocarray(void *ptr, size_t n, size_t size);
 void		*ft_calloc(size_t nmemb, size_t size);
 void		ft_free(void *ptr);
 void		show_alloc_mem(void);
