@@ -9,6 +9,7 @@ GENERIC = libft_malloc.so
 SRCS = srcs/malloc.c \
 	   srcs/free.c \
 	   srcs/realloc.c \
+	   srcs/calloc.c \
 	   srcs/init.c \
 	   srcs/prealloc.c \
 	   srcs/free_list.c \
@@ -27,7 +28,7 @@ HEADERS_DIR = includes
 FLAGS = -Wall -Wextra -Werror -Werror=pointer-arith -fPIC
 
 ifneq ($(DEV),)
-	FLAGS += -DDEV -g
+	FLAGS += -DDEV
 endif
 
 $(NAME): $(LIBFT_FILE) $(OBJS) $(HEADERS)
@@ -35,7 +36,7 @@ $(NAME): $(LIBFT_FILE) $(OBJS) $(HEADERS)
 	ln -sf $@ $(GENERIC)
 
 $(OBJS): %.o: %.c $(HEADERS)
-	gcc $(FLAGS) -I$(HEADERS_DIR) -c $< -o $@
+	gcc $(FLAGS) -g -I$(HEADERS_DIR) -c $< -o $@
 
 $(LIBFT_FILE):
 	make -C libft
