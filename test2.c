@@ -22,7 +22,7 @@ int main(void)
 	struct unused_chunk *b;
 	while (i > 1)
 	{
-		a = ft_malloc(i);
+		a = calloc(2, i);
 		dprintf(1, "malloc size = %d", i);
 		if (!a)
 		{
@@ -34,7 +34,7 @@ int main(void)
 		cspam(a, 'A', i - 1);
 		a[i - 1] = 0;
 		dprintf(1, " | stored string size = %ld\n", strlen(a));
-		ft_free(a);
+		free(a);
 		i -= 1;
 	}
 	print_list(lists.free);

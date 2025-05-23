@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <malloc.h>
-#include <errno.h>
-#include <sys/mman.h>
 #include "ft_malloc.h"
 
 void cspam(char *start, char c, int size)
@@ -22,7 +20,7 @@ int main(void)
 	struct unused_chunk *b;
 	while (i < 10000)
 	{
-		a = ft_realloc(a, i);
+		a = ft_reallocarray(a, 2, i);
 		dprintf(1, "malloc size = %d", i);
 		if (!a)
 		{
