@@ -9,8 +9,6 @@
 	char				*new;
 	struct unused_chunk	*old;
 
-	if (ptr && !size)
-		return (NULL);
 #ifdef DEV
 	new = ft_malloc(size);
 #else
