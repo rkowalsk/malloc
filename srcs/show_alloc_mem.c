@@ -4,19 +4,19 @@
 
 void	print_chunk(struct unused_chunk *chunk)
 {
-	printf("Block -> address: %p", chunk);
-	printf(", size: %ld", chunk->size & SIZE_MASK);
-	printf(", usable size: %ld",
+	ft_printf("Block -> address: %p", chunk);
+	ft_printf(", size: %ld", chunk->size & SIZE_MASK);
+	ft_printf(", usable size: %ld",
 			(chunk->size & SIZE_MASK) - USED_CHUNK_METADATA_SIZE);
 	if (IS_USED(chunk->size))
-		printf(", USED");
+		ft_printf(", USED");
 	else
-		printf(", UNUSED");
-	printf(", bwd : %p", chunk->bwd);
-	printf(", fwd : %p", chunk->fwd);
+		ft_printf(", UNUSED");
+	ft_printf(", bwd : %p", chunk->bwd);
+	ft_printf(", fwd : %p", chunk->fwd);
 	if (IS_PREALLOC(chunk->size))
-		printf(", TINY/SMALL");
-	printf("\n");
+		ft_printf(", TINY/SMALL");
+	ft_printf("\n");
 }
 
 void	print_list(struct unused_chunk *chunk)
@@ -33,12 +33,12 @@ void	print_heap_type(unsigned long size, struct heap *heap)
 	if (IS_PREALLOC(size))
 	{
 		if ((SIZE_MASK & size) - USED_CHUNK_METADATA_SIZE == TINY)
-			printf("TINY: %p\n", heap);
+			ft_printf("TINY: %p\n", heap);
 		else
-			printf("SMALL: %p\n", heap);
+			ft_printf("SMALL: %p\n", heap);
 	}
 	else
-		printf("LARGE: %p\n", heap);
+		ft_printf("LARGE: %p\n", heap);
 }
 
 void	hex_dump(char *start, unsigned long size)
@@ -49,19 +49,19 @@ void	hex_dump(char *start, unsigned long size)
 	while (i < size)
 	{
 		if (column_size == 0)
-			printf("  ");
+			ft_printf("  ");
 		else
-			printf(" ");
-		printf("0x%02x", start[i]);
+			ft_printf(" ");
+		ft_printf("0x%02x", start[i]);
 		i++;
 		column_size++;
 		if (column_size == HEX_DUMP_COLUMNS)
 		{
-			printf("\n");
+			ft_printf("\n");
 			column_size = 0;
 		}
 	}
-	printf("\n");
+	ft_printf("\n");
 }
 
 void	heap_show_alloc_mem(struct heap *heap, bool ex)
@@ -80,13 +80,13 @@ void	heap_show_alloc_mem(struct heap *heap, bool ex)
 				print_heap_type(chunk->size, heap);
 				printed_type = 1;
 			}
-			printf(" -> %p to %p (%lu bytes)\n",
+			ft_printf(" -> %p to %p (%lu bytes)\n",
 				(char *) chunk + USED_CHUNK_METADATA_SIZE + MCHUNKPTR_SIZE,
 				(char *) chunk + USED_CHUNK_METADATA_SIZE + MCHUNKPTR_SIZE + (SIZE_MASK & chunk->size),
 				(SIZE_MASK & chunk->size) - USED_CHUNK_METADATA_SIZE);
 			if (ex)
 			{
-				printf(" hex dump:\n");
+				ft_printf(" hex dump:\n");
 				hex_dump(((char *) chunk) + MCHUNKPTR_SIZE + USED_CHUNK_METADATA_SIZE, (SIZE_MASK & chunk->size) - USED_CHUNK_METADATA_SIZE);
 			}
 		}
