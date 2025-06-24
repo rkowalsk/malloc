@@ -31,7 +31,7 @@ typedef struct s_flag
 	char	conv;
 }	t_flag;
 
-int				ft_printf(const char *str, ...);
+int				ft_printf(const char *str, ...) __attribute__((format(printf, 1, 2)));
 char			*ft_uitox_lowercase(unsigned long n);
 char			*ft_uitox_uppercase(unsigned long n);
 int				ft_print_param(va_list params, t_flag flags);
