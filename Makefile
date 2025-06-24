@@ -14,7 +14,10 @@ SRCS = srcs/malloc.c \
 	   srcs/prealloc.c \
 	   srcs/free_list.c \
 	   srcs/heap_list.c \
+	   srcs/malloc_usable_size.c \
+	   srcs/show_alloc_mem.c \
 	   srcs/utils.c
+	   # srcs/random_shit.c \
 
 OBJS = ${SRCS:.c=.o}
 

@@ -19,8 +19,9 @@
 #define HEAP_HEADER_SIZE 24
 #define MCHUNKPTR_SIZE 8
 #define USED_CHUNK_METADATA_SIZE 8
-#define UNUSED_CHUNK_METADATA_SIZE 32 // ou 24 ?
+#define UNUSED_CHUNK_METADATA_SIZE 32
 #define MIN UNUSED_CHUNK_METADATA_SIZE
+#define HEX_DUMP_COLUMNS 10
 
 // Flags and masks
 #define USED_CHUNK 0b001
@@ -82,6 +83,7 @@ struct	lists
 {
 	struct unused_chunk	*free;
 	struct heap			*heaps;
+	unsigned long		mmaped;
 };
 
 // TODO: replace all longs with fixed-width integers ?
@@ -91,10 +93,10 @@ extern pthread_mutex_t	mutex;
 
 void		*ft_malloc(size_t size);
 void		*ft_realloc(void *ptr, size_t size);
-void		*ft_reallocarray(void *ptr, size_t n, size_t size);
 void		*ft_calloc(size_t nmemb, size_t size);
 void		ft_free(void *ptr);
 void		show_alloc_mem(void);
+void		show_alloc_mem_ex(void);
 int			initialize_malloc(void);
 void		print_list(struct unused_chunk *chunk);
 size_t		align_size(size_t size);
@@ -106,6 +108,3 @@ void		remove_free_list(struct unused_chunk *chunk);
 void		insert_heap_list(struct heap *heap);
 struct heap	*get_chunk_heap(struct unused_chunk *chunk);
 void		update_next_neighbour(struct unused_chunk *chunk, bool prev_used);
-
-//	void *a = mmap(NULL, 1, PROT_READ | PROT_WRITE,
-//		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);

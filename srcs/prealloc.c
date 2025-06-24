@@ -55,7 +55,6 @@ int	preallocate_heap(long page_size, bool is_tiny)
 	map_size = get_preallocation_size(chunk_payload_size, page_size);
 	address = mmap(NULL, map_size, PROT_READ | PROT_WRITE,
 			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-	dprintf(1, "heap address = %p\n", address);
 	if (!address)
 		return (1);
 	* (long *) address = map_size | PREALLOCATED;

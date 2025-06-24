@@ -6,6 +6,7 @@ int	initialize_malloc(void)
 
 	lists.free = NULL;
 	lists.heaps = NULL;
+	lists.mmaped = 0;
 	page_size = sysconf(_SC_PAGESIZE);
 	if (page_size == -1)
 		return (1);

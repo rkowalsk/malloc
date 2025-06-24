@@ -1,7 +1,5 @@
 #include "ft_malloc.h"
 
-extern unsigned long	mmaped;
-
 struct unused_chunk *coallesce_previous(struct unused_chunk *chunk)
 {
 	struct unused_chunk *prev_chunk;
@@ -39,7 +37,7 @@ bool	coallesce_next(struct unused_chunk *chunk)
 		lists.free = next_chunk->fwd;
 	chunk->size += next_chunk->size & SIZE_MASK;
 unmaping:
-	if (mmaped > UNMAP_THRESHOLD &&
+	if (lists.mmaped > UNMAP_THRESHOLD &&
 		(chunk->size & SIZE_MASK) == (heap->size & SIZE_MASK) - HEAP_HEADER_SIZE)
 	{
 		if (heap->fwd)
@@ -48,7 +46,7 @@ unmaping:
 			heap->bwd->fwd = heap->fwd;
 		if (lists.heaps == heap)
 			lists.heaps = heap->fwd;
-		mmaped -= heap->size;
+		lists.mmaped -= heap->size;
 		munmap(heap, heap->size);
 		return (true);
 	}

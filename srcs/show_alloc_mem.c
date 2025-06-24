@@ -1,5 +1,120 @@
 #include "ft_malloc.h"
+#include <stdbool.h>
+#include <stddef.h>
+
+void	print_chunk(struct unused_chunk *chunk)
+{
+	printf("Block -> address: %p", chunk);
+	printf(", size: %ld", chunk->size & SIZE_MASK);
+	printf(", usable size: %ld",
+			(chunk->size & SIZE_MASK) - USED_CHUNK_METADATA_SIZE);
+	if (IS_USED(chunk->size))
+		printf(", USED");
+	else
+		printf(", UNUSED");
+	printf(", bwd : %p", chunk->bwd);
+	printf(", fwd : %p", chunk->fwd);
+	if (IS_PREALLOC(chunk->size))
+		printf(", TINY/SMALL");
+	printf("\n");
+}
+
+void	print_list(struct unused_chunk *chunk)
+{
+	while (chunk != NULL)
+	{
+		print_chunk(chunk);
+		chunk = chunk->fwd;
+	}
+}
+
+void	print_heap_type(unsigned long size, struct heap *heap)
+{
+	if (IS_PREALLOC(size))
+	{
+		if ((SIZE_MASK & size) - USED_CHUNK_METADATA_SIZE == TINY)
+			printf("TINY: %p\n", heap);
+		else
+			printf("SMALL: %p\n", heap);
+	}
+	else
+		printf("LARGE: %p\n", heap);
+}
+
+void	hex_dump(char *start, unsigned long size)
+{
+	size_t	i = 0;
+	size_t	column_size = 0;
+
+	while (i < size)
+	{
+		if (column_size == 0)
+			printf("  ");
+		else
+			printf(" ");
+		printf("0x%02x", start[i]);
+		i++;
+		column_size++;
+		if (column_size == HEX_DUMP_COLUMNS)
+		{
+			printf("\n");
+			column_size = 0;
+		}
+	}
+	printf("\n");
+}
+
+void	heap_show_alloc_mem(struct heap *heap, bool ex)
+{
+	struct unused_chunk	*chunk;
+	bool				printed_type;
+
+	chunk = (struct unused_chunk *) (((char *) heap) + HEAP_HEADER_SIZE - MCHUNKPTR_SIZE);
+	printed_type = false;
+	while ((char *) chunk < (char *) heap + (SIZE_MASK & heap->size))
+	{
+		if (IS_USED(chunk->size))
+		{
+			if (!printed_type)
+			{
+				print_heap_type(chunk->size, heap);
+				printed_type = 1;
+			}
+			printf(" -> %p to %p (%lu bytes)\n",
+				(char *) chunk + USED_CHUNK_METADATA_SIZE + MCHUNKPTR_SIZE,
+				(char *) chunk + USED_CHUNK_METADATA_SIZE + MCHUNKPTR_SIZE + (SIZE_MASK & chunk->size),
+				(SIZE_MASK & chunk->size) - USED_CHUNK_METADATA_SIZE);
+			if (ex)
+			{
+				printf(" hex dump:\n");
+				hex_dump(((char *) chunk) + MCHUNKPTR_SIZE + USED_CHUNK_METADATA_SIZE, (SIZE_MASK & chunk->size) - USED_CHUNK_METADATA_SIZE);
+			}
+		}
+		chunk = (struct unused_chunk *)
+			((char *) chunk + (SIZE_MASK & chunk->size) + USED_CHUNK_METADATA_SIZE);
+	}
+}
+
+void	show_alloc_mem_ex(void)
+{
+	struct heap	*curr;
+
+	curr = lists.heaps;
+	while (curr)
+	{
+		heap_show_alloc_mem(curr, true);
+		curr = curr->fwd;
+	}
+}
 
 void	show_alloc_mem(void)
 {
+	struct heap	*curr;
+
+	curr = lists.heaps;
+	while (curr)
+	{
+		heap_show_alloc_mem(curr, false);
+		curr = curr->fwd;
+	}
 }

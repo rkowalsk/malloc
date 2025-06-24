@@ -27,21 +27,3 @@
 #endif
 	return (new);
 }
-
-#ifdef DEV
-	void	*ft_reallocarray(void *ptr, size_t n, size_t size)
-#else
-	void	*reallocarray(void *ptr, size_t n, size_t size)
-#endif
-{
-	if (n > SIZE_MAX / size)
-	{
-		errno = ENOMEM;
-		return (NULL);
-	}
-#ifdef DEV
-	return (ft_realloc(ptr, n * size));
-#else
-	return (realloc(ptr, n * size));
-#endif
-}
