@@ -38,6 +38,10 @@
 !_TAG_KIND_DESCRIPTION!Make	I,makefile	/makefiles/
 !_TAG_KIND_DESCRIPTION!Make	m,macro	/macros/
 !_TAG_KIND_DESCRIPTION!Make	t,target	/targets/
+!_TAG_KIND_DESCRIPTION!Sh	a,alias	/aliases/
+!_TAG_KIND_DESCRIPTION!Sh	f,function	/functions/
+!_TAG_KIND_DESCRIPTION!Sh	h,heredoc	/label for here document/
+!_TAG_KIND_DESCRIPTION!Sh	s,script	/script files/
 !_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
 !_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
 !_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
@@ -46,6 +50,7 @@
 !_TAG_PARSER_VERSION!C++	1.1	/current.age/
 !_TAG_PARSER_VERSION!Gdbinit	0.0	/current.age/
 !_TAG_PARSER_VERSION!Make	0.0	/current.age/
+!_TAG_PARSER_VERSION!Sh	0.0	/current.age/
 !_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
 !_TAG_PROC_CWD	/home/me/Documents/42/malloc/	//
 !_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
@@ -62,6 +67,8 @@
 !_TAG_ROLE_DESCRIPTION!C++!macro	undef	/undefined/
 !_TAG_ROLE_DESCRIPTION!Make!makefile	included	/included/
 !_TAG_ROLE_DESCRIPTION!Make!makefile	optional	/optionally included/
+!_TAG_ROLE_DESCRIPTION!Sh!heredoc	endmarker	/end marker/
+!_TAG_ROLE_DESCRIPTION!Sh!script	loaded	/loaded/
 $(LIBFT_FILE)	Makefile	/^$(LIBFT_FILE):$/;"	t
 $(NAME)	Makefile	/^$(NAME): $(LIBFT_FILE) $(OBJS) $(HEADERS)$/;"	t
 $(NAME)	libft/Makefile	/^$(NAME): $(OBJS)$/;"	t
@@ -71,6 +78,8 @@ $(OBJS)	libft/Makefile	/^$(OBJS): %.o: %.c $(HEADER)$/;"	t
 %.o	libft/Makefile	/^$(OBJS): %.o: %.c $(HEADER)$/;"	t
 .PHONY	Makefile	/^.PHONY = all clean fclean re$/;"	m
 BUFFER_SIZE	libft/get_next_line.c	/^#define BUFFER_SIZE /;"	d	file:
+EOF	malloc_stress/malloc_stress.sh	/^    cat <<EOF$/;"	h
+FLAGS	Makefile	/^FLAGS = -Wall -Wextra -Werror -Werror=pointer-arith -fPIC$/;"	m
 FLAGS	libft/Makefile	/^FLAGS = -Wall -Wextra -Werror$/;"	m
 FT_PRINTF_H	libft/ft_printf.h	/^# define FT_PRINTF_H$/;"	d
 GENERIC	Makefile	/^GENERIC = libft_malloc.so$/;"	m
@@ -78,6 +87,7 @@ HEADER	libft/Makefile	/^HEADER = libft.h$/;"	m
 HEADERS	Makefile	/^HEADERS =	includes\/libft.h \\$/;"	m
 HEADERS_DIR	Makefile	/^HEADERS_DIR = includes$/;"	m
 HEAP_HEADER_SIZE	includes/ft_malloc.h	/^#define HEAP_HEADER_SIZE /;"	d
+HEX_DUMP_COLUMNS	includes/ft_malloc.h	/^#define HEX_DUMP_COLUMNS /;"	d
 HOSTTYPE	Makefile	/^	HOSTTYPE := $(shell uname -m)_$(shell uname -s)$/;"	m
 IS_PREALLOC	includes/ft_malloc.h	/^#define IS_PREALLOC(/;"	d
 IS_PREV_USED	includes/ft_malloc.h	/^#define IS_PREV_USED(/;"	d
@@ -98,18 +108,28 @@ SMALL	includes/ft_malloc.h	/^#define SMALL /;"	d
 SRCS	Makefile	/^SRCS = srcs\/malloc.c \\$/;"	m
 SRCS	libft/Makefile	/^SRCS =	ft_isalnum.c \\$/;"	m
 TINY	includes/ft_malloc.h	/^#define TINY /;"	d
+UNMAP_THRESHOLD	includes/ft_malloc.h	/^#define UNMAP_THRESHOLD /;"	d
 UNUSED_CHUNK_METADATA_SIZE	includes/ft_malloc.h	/^#define UNUSED_CHUNK_METADATA_SIZE /;"	d
 USED_CHUNK	includes/ft_malloc.h	/^#define USED_CHUNK /;"	d
 USED_CHUNK_METADATA_SIZE	includes/ft_malloc.h	/^#define USED_CHUNK_METADATA_SIZE /;"	d
 align_size	srcs/utils.c	/^size_t	align_size(size_t size)$/;"	f	typeref:typename:size_t
+aligned_alloc	srcs/random_shit.c	/^void *aligned_alloc(size_t alignment, size_t size)$/;"	f	typeref:typename:void *
 all	Makefile	/^all: $(NAME)$/;"	t
 all	libft/Makefile	/^all: $(NAME)$/;"	t
 allocate_chunk	srcs/malloc.c	/^void	*allocate_chunk(size_t size)$/;"	f	typeref:typename:void *
+atexit	malloc_stress/malloc_stress.sh	/^atexit()$/;"	f
 bwd	includes/ft_malloc.h	/^	struct heap		*bwd;$/;"	m	struct:heap	typeref:struct:heap *
 bwd	includes/ft_malloc.h	/^	struct unused_chunk	*bwd;$/;"	m	struct:unused_chunk	typeref:struct:unused_chunk *
 clean	Makefile	/^clean:$/;"	t
 clean	libft/Makefile	/^clean:$/;"	t
+coallesce	srcs/free.c	/^struct	unused_chunk *coallesce(struct unused_chunk *chunk)$/;"	f	typeref:struct:unused_chunk *
+coallesce_next	srcs/free.c	/^bool	coallesce_next(struct unused_chunk *chunk)$/;"	f	typeref:typename:bool
+coallesce_previous	srcs/free.c	/^struct unused_chunk *coallesce_previous(struct unused_chunk *chunk)$/;"	f	typeref:struct:unused_chunk *
 conv	libft/ft_printf.h	/^	char	conv;$/;"	m	struct:s_flag	typeref:typename:char
+cspam	test.c	/^void cspam(char *start, char c, int size)$/;"	f	typeref:typename:void
+cspam	test2.c	/^void cspam(char *start, char c, int size)$/;"	f	typeref:typename:void
+cspam	test_realloc.c	/^void cspam(char *start, char c, int size)$/;"	f	typeref:typename:void
+cspam	test_show.c	/^void cspam(char *start, char c, int size)$/;"	f	typeref:typename:void
 dot	libft/ft_printf/ft_parsing.c	/^static t_flag	dot(va_list params, char *str, t_flag flags, int *i)$/;"	f	typeref:typename:t_flag	file:
 empty_str_alloc	libft/ft_strtrim.c	/^static char	*empty_str_alloc(void)$/;"	f	typeref:typename:char *	file:
 error	libft/ft_printf.h	/^	bool	error;$/;"	m	struct:s_flag	typeref:typename:bool
@@ -122,8 +142,9 @@ free_all	libft/ft_split.c	/^static char	**free_all(char **strs, int j)$/;"	f	typ
 ft_atoi	libft/ft_atoi.c	/^int	ft_atoi(const char *str)$/;"	f	typeref:typename:int
 ft_bzero	libft/ft_bzero.c	/^void	ft_bzero(void *s, size_t n)$/;"	f	typeref:typename:void
 ft_calloc	libft/ft_calloc.c	/^void	*ft_calloc(size_t count, size_t size)$/;"	f	typeref:typename:void *
+ft_calloc	srcs/calloc.c	/^	void	*ft_calloc(size_t n, size_t size)$/;"	f	typeref:typename:void *
 ft_conv_or_flag	libft/ft_printf/ft_parsing_plus.c	/^int	ft_conv_or_flag(char c)$/;"	f	typeref:typename:int
-ft_free	srcs/free.c	/^void	ft_free(void *ptr)$/;"	f	typeref:typename:void
+ft_free	srcs/free.c	/^	void	ft_free(void *ptr)$/;"	f	typeref:typename:void
 ft_free_all	libft/ft_printf/ft_useful.c	/^int	ft_free_all(const int number, ...)$/;"	f	typeref:typename:int
 ft_init_static	libft/ft_printf/ft_parsing_plus.c	/^t_flag	ft_init_static(t_flag flags)$/;"	f	typeref:typename:t_flag
 ft_isalnum	libft/ft_isalnum.c	/^int	ft_isalnum(int c)$/;"	f	typeref:typename:int
@@ -132,7 +153,8 @@ ft_isascii	libft/ft_isascii.c	/^int	ft_isascii(int c)$/;"	f	typeref:typename:int
 ft_isdigit	libft/ft_isdigit.c	/^int	ft_isdigit(int c)$/;"	f	typeref:typename:int
 ft_isprint	libft/ft_isprint.c	/^int	ft_isprint(int c)$/;"	f	typeref:typename:int
 ft_itoa	libft/ft_itoa.c	/^char	*ft_itoa(int n)$/;"	f	typeref:typename:char *
-ft_malloc	srcs/malloc.c	/^void	*ft_malloc(size_t size)$/;"	f	typeref:typename:void *
+ft_malloc	srcs/malloc.c	/^	void	*ft_malloc(size_t size)$/;"	f	typeref:typename:void *
+ft_malloc_usable_size	srcs/malloc_usable_size.c	/^size_t ft_malloc_usable_size(void *ptr)$/;"	f	typeref:typename:size_t
 ft_memccpy	libft/ft_memccpy.c	/^void	*ft_memccpy(void *dst, const void *src, int c, size_t n)$/;"	f	typeref:typename:void *
 ft_memchr	libft/ft_memchr.c	/^void	*ft_memchr(const void *s, int c, size_t n)$/;"	f	typeref:typename:void *
 ft_memcmp	libft/ft_memcmp.c	/^int	ft_memcmp(const void *s1, const void *s2, size_t n)$/;"	f	typeref:typename:int
@@ -155,6 +177,7 @@ ft_putchar_fd	libft/ft_putchar_fd.c	/^void	ft_putchar_fd(char c, int fd)$/;"	f	t
 ft_putendl_fd	libft/ft_putendl_fd.c	/^void	ft_putendl_fd(char *s, int fd)$/;"	f	typeref:typename:void
 ft_putnbr_fd	libft/ft_putnbr_fd.c	/^void	ft_putnbr_fd(int n, int fd)$/;"	f	typeref:typename:void
 ft_putstr_fd	libft/ft_putstr_fd.c	/^void	ft_putstr_fd(char *s, int fd)$/;"	f	typeref:typename:void
+ft_realloc	srcs/realloc.c	/^	void	*ft_realloc(void *ptr, size_t size)$/;"	f	typeref:typename:void *
 ft_split	libft/ft_split.c	/^char	**ft_split(char const *s, char c)$/;"	f	typeref:typename:char **
 ft_strchr	libft/ft_strchr.c	/^char	*ft_strchr(const char *s, int c)$/;"	f	typeref:typename:char *
 ft_strcmp	libft/ft_strcmp.c	/^int	ft_strcmp(const char *s1, const char *s2)$/;"	f	typeref:typename:int
@@ -198,9 +221,10 @@ gnl_care_rest	libft/get_next_line.c	/^int	gnl_care_rest(char **rest, char **line
 gnl_new_line	libft/get_next_line.c	/^char	*gnl_new_line(char **line, char *buffer)$/;"	f	typeref:typename:char *
 gnl_store_rest	libft/get_next_line.c	/^char	*gnl_store_rest(char *rest, char **line)$/;"	f	typeref:typename:char *
 heap	includes/ft_malloc.h	/^struct heap$/;"	s
+heap_show_alloc_mem	srcs/show_alloc_mem.c	/^void	heap_show_alloc_mem(struct heap *heap, bool ex)$/;"	f	typeref:typename:void
 heaps	includes/ft_malloc.h	/^	struct heap			*heaps;$/;"	m	struct:lists	typeref:struct:heap *
+hex_dump	srcs/show_alloc_mem.c	/^void	hex_dump(char *start, unsigned long size)$/;"	f	typeref:typename:void
 initialize_malloc	srcs/init.c	/^int	initialize_malloc(void)$/;"	f	typeref:typename:int
-initialized	srcs/malloc.c	/^bool				initialized = 0;$/;"	v	typeref:typename:bool
 insert_free_list	srcs/free_list.c	/^void	insert_free_list(struct unused_chunk *chunk)$/;"	f	typeref:typename:void
 insert_heap_list	srcs/heap_list.c	/^void	insert_heap_list(struct heap *heap)$/;"	f	typeref:typename:void
 insert_new_chunks	srcs/prealloc.c	/^static void	insert_new_chunks(struct unused_chunk *new_first,$/;"	f	typeref:typename:void	file:
@@ -208,7 +232,12 @@ lists	includes/ft_malloc.h	/^struct	lists$/;"	s
 lists	srcs/malloc.c	/^struct lists		lists;$/;"	v	typeref:struct:lists
 m_t	libft/ft_split.c	/^static char	**m_t(char ***str, int size)$/;"	f	typeref:typename:char **	file:
 main	test.c	/^int main(void)$/;"	f	typeref:typename:int
+main	test2.c	/^int main(void)$/;"	f	typeref:typename:int
+main	test_realloc.c	/^int main(void)$/;"	f	typeref:typename:int
+main	test_show.c	/^int main(void)$/;"	f	typeref:typename:int
+memalign	srcs/random_shit.c	/^void *memalign(size_t alignment, size_t size)$/;"	f	typeref:typename:void *
 minus	libft/ft_printf.h	/^	bool	minus;$/;"	m	struct:s_flag	typeref:typename:bool
+mmaped	includes/ft_malloc.h	/^	unsigned long		mmaped;$/;"	m	struct:lists	typeref:typename:unsigned long
 mutex	srcs/malloc.c	/^pthread_mutex_t		mutex = PTHREAD_MUTEX_INITIALIZER;$/;"	v	typeref:typename:pthread_mutex_t
 nb_precisions	libft/ft_printf.h	/^	int		nb_precisions;$/;"	m	struct:s_flag	typeref:typename:int
 nb_width	libft/ft_printf.h	/^	int		nb_width;$/;"	m	struct:s_flag	typeref:typename:int
@@ -219,27 +248,38 @@ part_of_set	libft/ft_strtrim.c	/^static int	part_of_set(const char *set, char c)
 patch_norme	libft/ft_printf/ft_printf.c	/^static int	patch_norme(va_list params, const char *str, size_t i)$/;"	f	typeref:typename:int	file:
 pchunk	.gdbinit	/^define pchunk$/;"	d
 plist	.gdbinit	/^define plist$/;"	d
+posix_memalign	srcs/random_shit.c	/^int posix_memalign(void **memptr, size_t alignment, size_t size)$/;"	f	typeref:typename:int
 preallocate_heap	srcs/prealloc.c	/^int	preallocate_heap(long page_size, bool is_tiny)$/;"	f	typeref:typename:int
 precision	libft/ft_printf.h	/^	bool	precision;$/;"	m	struct:s_flag	typeref:typename:bool
-prev_size	includes/ft_malloc.h	/^	unsigned long	prev_size;$/;"	m	struct:unused_chunk	typeref:typename:unsigned long
+prev_size	includes/ft_malloc.h	/^	unsigned long	prev_size; \/\/ acutally the prev_size of the previous chunk$/;"	m	struct:unused_chunk	typeref:typename:unsigned long
 print_all	libft/ft_printf/ft_params_di.c	/^static void	print_all(t_flag flags, bool neg, char *width, char *prec)$/;"	f	typeref:typename:void	file:
-print_chunk	srcs/utils.c	/^void	print_chunk(struct unused_chunk *chunk)$/;"	f	typeref:typename:void
-print_list	srcs/utils.c	/^void	print_list(struct unused_chunk *chunk)$/;"	f	typeref:typename:void
+print_chunk	srcs/show_alloc_mem.c	/^void	print_chunk(struct unused_chunk *chunk)$/;"	f	typeref:typename:void
+print_heap_type	srcs/show_alloc_mem.c	/^void	print_heap_type(unsigned long size, struct heap *heap)$/;"	f	typeref:typename:void
+print_list	srcs/show_alloc_mem.c	/^void	print_list(struct unused_chunk *chunk)$/;"	f	typeref:typename:void
 printing	libft/ft_printf/ft_params_di.c	/^static int	printing(t_flag flags, char *str, char *width, char *prec)$/;"	f	typeref:typename:int	file:
 printing	libft/ft_printf/ft_printf.c	/^static int	printing(va_list params, const char *str, size_t i)$/;"	f	typeref:typename:int	file:
+pvalloc	srcs/random_shit.c	/^void *pvalloc(size_t size)$/;"	f	typeref:typename:void *
+rand	malloc_stress/malloc_stress.sh	/^            if (rand() % 2 == 0)$/;"	f
+rand	malloc_stress/malloc_stress.sh	/^        offset = rand() % LENGTH;$/;"	f
+rand	malloc_stress/malloc_stress.sh	/^        size = rand() % 666;$/;"	f
 re	Makefile	/^re: fclean $(NAME)$/;"	t
 re	libft/Makefile	/^re: fclean all$/;"	t
 remove_free_list	srcs/free_list.c	/^void	remove_free_list(struct unused_chunk *chunk)$/;"	f	typeref:typename:void
 s_flag	libft/ft_printf.h	/^typedef struct s_flag$/;"	s
 show_alloc_mem	srcs/show_alloc_mem.c	/^void	show_alloc_mem(void)$/;"	f	typeref:typename:void
+show_alloc_mem_ex	srcs/show_alloc_mem.c	/^void	show_alloc_mem_ex(void)$/;"	f	typeref:typename:void
 size	includes/ft_malloc.h	/^	unsigned long	size;$/;"	m	struct:heap	typeref:typename:unsigned long
 size	includes/ft_malloc.h	/^	unsigned long	size;$/;"	m	struct:unused_chunk	typeref:typename:unsigned long
 split_chunk	srcs/malloc.c	/^void	*split_chunk(void *big_chunk, size_t big_size, size_t size,$/;"	f	typeref:typename:void *
 star	libft/ft_printf/ft_parsing.c	/^static t_flag	star(va_list params, t_flag flags, int *i)$/;"	f	typeref:typename:t_flag	file:
 star_digit_dot	libft/ft_printf/ft_parsing.c	/^static t_flag	star_digit_dot(va_list params, char *str, t_flag flags, int *i)$/;"	f	typeref:typename:t_flag	file:
+stress	malloc_stress/malloc_stress.sh	/^    stress();$/;"	f
+stress	malloc_stress/malloc_stress.sh	/^void stress()$/;"	f
 t_flag	libft/ft_printf.h	/^}	t_flag;$/;"	t	typeref:struct:s_flag
 unused_chunk	includes/ft_malloc.h	/^struct	unused_chunk$/;"	s
 update_next_neighbour	srcs/utils.c	/^void	update_next_neighbour(struct unused_chunk *chunk, bool prev_used)$/;"	f	typeref:typename:void
+usage	malloc_stress/malloc_stress.sh	/^usage()$/;"	f
+valloc	srcs/random_shit.c	/^void *valloc(size_t size)$/;"	f	typeref:typename:void *
 width	libft/ft_printf.h	/^	bool	width;$/;"	m	struct:s_flag	typeref:typename:bool
 zero	libft/ft_printf.h	/^	bool	zero;$/;"	m	struct:s_flag	typeref:typename:bool
 zero_minus_error	libft/ft_printf/ft_parsing.c	/^static t_flag	zero_minus_error(int ret, char *str, t_flag flags, int *i)$/;"	f	typeref:typename:t_flag	file:
