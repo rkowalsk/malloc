@@ -20,7 +20,7 @@ int main(void)
 	struct unused_chunk *b;
 	while (i < 10000)
 	{
-		a = ft_reallocarray(a, 2, i);
+		a = ft_realloc(a, i);
 		dprintf(1, "malloc size = %d", i);
 		if (!a)
 		{

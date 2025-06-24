@@ -22,7 +22,7 @@ int main(void)
 	struct unused_chunk *b;
 	while (i > 1)
 	{
-		a = calloc(2, i);
+		a = malloc(i);
 		dprintf(1, "malloc size = %d", i);
 		if (!a)
 		{
