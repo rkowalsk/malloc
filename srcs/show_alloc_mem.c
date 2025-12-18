@@ -80,7 +80,7 @@ void	heap_show_alloc_mem(struct heap *heap, bool ex)
 				print_heap_type(chunk->size, heap);
 				printed_type = 1;
 			}
-			ft_printf(" -> %p to %p (%lu bytes)\n",
+			ft_printf(" -> %p to %p (%u bytes)\n",
 				(char *) chunk + USED_CHUNK_METADATA_SIZE + MCHUNKPTR_SIZE,
 				(char *) chunk + USED_CHUNK_METADATA_SIZE + MCHUNKPTR_SIZE + (SIZE_MASK & chunk->size),
 				(SIZE_MASK & chunk->size) - USED_CHUNK_METADATA_SIZE);
