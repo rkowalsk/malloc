@@ -5,8 +5,8 @@
 void	print_chunk(struct unused_chunk *chunk)
 {
 	ft_printf("Block -> address: %p", chunk);
-	ft_printf(", size: %ld", chunk->size & SIZE_MASK);
-	ft_printf(", usable size: %ld",
+	ft_printf(", size: %d", chunk->size & SIZE_MASK);
+	ft_printf(", usable size: %d",
 			(chunk->size & SIZE_MASK) - USED_CHUNK_METADATA_SIZE);
 	if (IS_USED(chunk->size))
 		ft_printf(", USED");
@@ -21,11 +21,13 @@ void	print_chunk(struct unused_chunk *chunk)
 
 void	print_list(struct unused_chunk *chunk)
 {
+	pthread_mutex_lock(&mutex);
 	while (chunk != NULL)
 	{
 		print_chunk(chunk);
 		chunk = chunk->fwd;
 	}
+	pthread_mutex_unlock(&mutex);
 }
 
 void	print_heap_type(unsigned long size, struct heap *heap)
@@ -69,6 +71,7 @@ void	heap_show_alloc_mem(struct heap *heap, bool ex)
 	struct unused_chunk	*chunk;
 	bool				printed_type;
 
+	pthread_mutex_lock(&mutex);
 	chunk = (struct unused_chunk *) (((char *) heap) + HEAP_HEADER_SIZE - MCHUNKPTR_SIZE);
 	printed_type = false;
 	while ((char *) chunk < (char *) heap + (SIZE_MASK & heap->size))
@@ -93,6 +96,7 @@ void	heap_show_alloc_mem(struct heap *heap, bool ex)
 		chunk = (struct unused_chunk *)
 			((char *) chunk + (SIZE_MASK & chunk->size) + USED_CHUNK_METADATA_SIZE);
 	}
+	pthread_mutex_unlock(&mutex);
 }
 
 void	show_alloc_mem_ex(void)
