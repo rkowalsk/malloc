@@ -6,7 +6,6 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <stddef.h>
-#include <stdio.h>
 #include <sys/mman.h>
 #include <stddef.h>
 #include <limits.h>
