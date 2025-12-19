@@ -122,7 +122,8 @@ struct unused_chunk	*get_new_chunk(size_t size)
 #endif
 {
 	struct unused_chunk	*chunk;
-	static bool			initialized = 0;
+	static bool			initialized_malloc = 0;
+	static bool			initialized_prealloc = 0;
 
 	if (size > PTRDIFF_MAX)
 	{
@@ -130,14 +131,19 @@ struct unused_chunk	*get_new_chunk(size_t size)
 		return (NULL);
 	}
 	pthread_mutex_lock(&mutex);
-	if (!initialized)
+	if (!initialized_malloc)
 	{
-		if (initialize_malloc())
+		initialize_malloc();
+		initialized_malloc = 1;
+	}
+	if (!initialized_prealloc)
+	{
+		if (initialize_prealloc())
 		{
 			pthread_mutex_unlock(&mutex);
 			return (NULL);
 		}
-		initialized = 1;
+		initialized_prealloc = 1;
 	}
 	pthread_mutex_unlock(&mutex);
 	size = align_size(size);
