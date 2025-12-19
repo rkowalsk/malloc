@@ -31,7 +31,7 @@ HEADERS_DIR = includes
 FLAGS = -Wall -Wextra -Werror -Werror=pointer-arith -fPIC
 
 ifneq ($(DEV),)
-	FLAGS += -DDEV
+	FLAGS += -DDEV -g -O0
 endif
 
 $(NAME): $(LIBFT_FILE) $(OBJS) $(HEADERS)
