@@ -42,6 +42,7 @@ int	preallocate_heap(long page_size, bool is_tiny)
 	char				*address;
 	char				*curr;
 	char				*end;
+	char				*next;
 	struct unused_chunk	*list_curr;
 	struct unused_chunk	*list_start;
 	long				chunk_payload_size;
@@ -70,7 +71,14 @@ int	preallocate_heap(long page_size, bool is_tiny)
 	while (curr < end)
 	{
 		chunk = (struct unused_chunk *) curr;
-		chunk->size = full_chunk_size | PREALLOCATED;
+		next = curr + full_chunk_size;
+		if (next >= end)
+		{
+			chunk->size = (address + map_size) - (curr + MCHUNKPTR_SIZE);
+			chunk->size |= PREALLOCATED;
+		}
+		else
+			chunk->size = full_chunk_size | PREALLOCATED;
 		// * (long *) (chunk + chunk_payload_size) = full_chunk_size;
 		if (!list_start)
 		{
@@ -84,7 +92,7 @@ int	preallocate_heap(long page_size, bool is_tiny)
 		}
 		list_curr = chunk;
 		chunk->fwd = NULL;
-		curr += full_chunk_size;
+		curr = next;
 	}
 	insert_new_chunks(list_start, list_curr);
 	insert_heap_list((struct heap *) address);

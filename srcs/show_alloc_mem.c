@@ -1,6 +1,7 @@
 #include "ft_malloc.h"
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdio.h>
 
 void	print_chunk(struct unused_chunk *chunk)
 {
@@ -74,7 +75,7 @@ void	heap_show_alloc_mem(struct heap *heap, bool ex)
 	pthread_mutex_lock(&mutex);
 	chunk = (struct unused_chunk *) (((char *) heap) + HEAP_HEADER_SIZE - MCHUNKPTR_SIZE);
 	printed_type = false;
-	while ((char *) chunk < (char *) heap + (SIZE_MASK & heap->size))
+	while ((char *) chunk + MCHUNKPTR_SIZE < (char *) heap + (SIZE_MASK & heap->size))
 	{
 		if (IS_USED(chunk->size))
 		{
@@ -83,9 +84,9 @@ void	heap_show_alloc_mem(struct heap *heap, bool ex)
 				print_heap_type(chunk->size, heap);
 				printed_type = 1;
 			}
-			ft_printf(" -> %p to %p (%u bytes)\n",
-				(char *) chunk + USED_CHUNK_METADATA_SIZE + MCHUNKPTR_SIZE,
-				(char *) chunk + USED_CHUNK_METADATA_SIZE + MCHUNKPTR_SIZE + (SIZE_MASK & chunk->size),
+			ft_printf(" -> %p to %p (%u available bytes)\n",
+				(char *) chunk + MCHUNKPTR_SIZE + USED_CHUNK_METADATA_SIZE,
+				(char *) chunk + MCHUNKPTR_SIZE + (SIZE_MASK & chunk->size),
 				(SIZE_MASK & chunk->size) - USED_CHUNK_METADATA_SIZE);
 			if (ex)
 			{
@@ -94,7 +95,7 @@ void	heap_show_alloc_mem(struct heap *heap, bool ex)
 			}
 		}
 		chunk = (struct unused_chunk *)
-			((char *) chunk + (SIZE_MASK & chunk->size) + USED_CHUNK_METADATA_SIZE);
+			((char *) chunk + (SIZE_MASK & chunk->size));
 	}
 	pthread_mutex_unlock(&mutex);
 }
