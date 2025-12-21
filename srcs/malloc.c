@@ -136,7 +136,7 @@ struct unused_chunk	*get_new_chunk(size_t size)
 		initialize_malloc();
 		initialized_malloc = 1;
 	}
-	if (!initialized_prealloc)
+	if (!initialized_prealloc && size <= SMALL)
 	{
 		if (initialize_prealloc())
 		{

@@ -6,7 +6,11 @@ void	insert_free_list(struct unused_chunk *chunk)
 	unsigned long		*prev_size;
 
 	if (!lists.free)
+	{
+		chunk->bwd = NULL;
+		chunk->fwd = NULL;
 		lists.free = chunk;
+	}
 	else if ((lists.free->size & SIZE_MASK) >= (chunk->size & SIZE_MASK))
 	{
 		lists.free->bwd = chunk;
