@@ -12,8 +12,8 @@
 #include <stdint.h>
 
 // Sizes
-#define TINY 40
-#define SMALL 136
+#define TINY 136
+#define SMALL 4152
 #define UNMAP_THRESHOLD 8388608 // 8MiB
 #define HEAP_HEADER_SIZE 24
 #define MCHUNKPTR_SIZE 8
