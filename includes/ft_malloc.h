@@ -80,7 +80,9 @@ struct heap
 
 struct	lists
 {
-	struct unused_chunk	*free;
+	struct unused_chunk	*tiny;
+	struct unused_chunk	*small;
+	struct unused_chunk	*large;
 	struct heap			*heaps;
 	unsigned long		mmaped;
 };
@@ -97,13 +99,12 @@ void		ft_free(void *ptr);
 void		show_alloc_mem(void);
 void		show_alloc_mem_ex(void);
 void		initialize_malloc(void);
-int			initialize_prealloc(void);
 void		print_list(struct unused_chunk *chunk);
 size_t		align_size(size_t size);
 void		print_chunk(struct unused_chunk *chunk);
-int			preallocate_heap(long page_size, bool is_tiny);
-void		insert_free_list(struct unused_chunk *chunk);
-void		remove_free_list(struct unused_chunk *chunk);
+// int			preallocate_heap(long page_size, bool is_tiny);
+void		insert_into_list(struct unused_chunk **list, struct unused_chunk *chunk);
+void		remove_from_list(struct unused_chunk **list, struct unused_chunk *chunk);
 void		insert_heap_list(struct heap *heap);
 struct heap	*get_chunk_heap(struct unused_chunk *chunk);
 void		update_next_neighbour(struct unused_chunk *chunk, bool prev_used);

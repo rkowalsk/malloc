@@ -35,7 +35,7 @@ void	print_heap_type(unsigned long size, struct heap *heap)
 {
 	if (IS_PREALLOC(size))
 	{
-		if ((SIZE_MASK & size) - USED_CHUNK_METADATA_SIZE == TINY)
+		if ((SIZE_MASK & size) - USED_CHUNK_METADATA_SIZE <= TINY)
 			ft_printf("TINY: %p\n", heap);
 		else
 			ft_printf("SMALL: %p\n", heap);
