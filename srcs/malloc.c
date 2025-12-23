@@ -54,60 +54,6 @@ size_t	new_heap_size(size_t needed_size, long page_size)
 	return (heap_size);
 }
 
-// void	*allocate_chunk(size_t map_size, size_t chunk_size)
-// {
-// 	char				*heap;
-// 	unsigned long		*long_ptr;
-// 	size_t				heap_size;
-// 	long				page_size;
-
-// 	page_size = sysconf(_SC_PAGESIZE);
-// 	if (page_size == -1)
-// 		return (NULL);
-// 	heap_size = new_heap_size(size, page_size);
-// 	heap = mmap(NULL, heap_size, PROT_READ | PROT_WRITE,
-// 			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-// 	if (!heap)
-// 		return (NULL);
-// 	lists.mmaped += heap_size;
-// 	long_ptr = (unsigned long *) heap;
-// 	*long_ptr = heap_size;
-// 	insert_heap_list((struct heap *) heap);
-// 	return (split_chunk(lists.heap + HEAP_HEADER_SIZE, heap_size - HEAP_HEADER_SIZE,
-// 			size, PREV_USED));
-// }
-
-// struct unused_chunk	*get_new_chunk(size_t size)
-// {
-// 	long				page_size;
-// 	struct unused_chunk	*chunk;
-
-// 	page_size = sysconf(_SC_PAGESIZE);
-// 	if (page_size == -1)
-// 		return (NULL);
-// 	if (size <= TINY)
-// 	{
-// 		if (preallocate_heap(page_size, true))
-// 		{
-// 			return (NULL);
-// 		}
-// 		chunk = get_from_list(&lists.tiny);
-// 	}
-// 	else if (size <= SMALL)
-// 	{
-// 		if (preallocate_heap(page_size, false))
-// 		{
-// 			return (NULL);
-// 		}
-// 		chunk = get_from_list(&lists.small);
-// 	}
-// 	else
-// 	{
-// 		chunk = allocate_large_chunk(&lists.large, size);
-// 	}
-// 	return (chunk);
-// }
-
 static long	get_preallocation_size(long chunk_size, long page_size)
 {
 	long	map_size;
@@ -126,12 +72,14 @@ void	*allocate_new_chunk(size_t size)
 	long				map_size;
 	long				page_size;
 	unsigned long		prealloc;
+	unsigned long		heap_small;
 	struct unused_chunk	**list;
 
 	page_size = sysconf(_SC_PAGESIZE);
 	if (page_size == -1)
 		return (NULL);
 	prealloc = 0;
+	heap_small = 0;
 	if (size <= TINY)
 	{
 		list = &lists.tiny;
@@ -141,8 +89,9 @@ void	*allocate_new_chunk(size_t size)
 	else if (size <= SMALL)
 	{
 		list = &lists.small;
-		map_size = get_preallocation_size(TINY, page_size);
+		map_size = get_preallocation_size(SMALL, page_size);
 		prealloc = PREALLOCATED;
+		heap_small = HEAP_SMALL;
 	}
 	else
 	{
@@ -154,9 +103,7 @@ void	*allocate_new_chunk(size_t size)
 	if (!heap)
 		return (NULL);
 	lists.mmaped += map_size;
-	heap->size = map_size;
-	if (size <= SMALL)
-		heap->size |= PREALLOCATED;
+	heap->size = map_size | prealloc | heap_small;
 	insert_heap_list(heap);
 	chunk = split_chunk(list, (char *) heap + HEAP_HEADER_SIZE,
 		map_size - HEAP_HEADER_SIZE, size, PREV_USED, prealloc);
@@ -197,7 +144,6 @@ void	*get_free_chunk(size_t size)
 		initialized_malloc = 1;
 	}
 	size = align_size(size);
-	if (size <= TINY)
 	chunk = get_free_chunk(size);
 	if (!chunk)
 		chunk = allocate_new_chunk(size);

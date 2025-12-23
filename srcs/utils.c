@@ -19,6 +19,7 @@ void	update_next_neighbour(struct unused_chunk *chunk, bool prev_used)
 
 	heap = get_chunk_heap(chunk);
 	next_chunk = (char *) chunk + MCHUNKPTR_SIZE + (chunk->size & SIZE_MASK);
+	dprintf(1, "unn: chunk = %p, chunk->size = %ld, heap = %p, heap->size = %ld, next_chunk = %p\n", chunk, chunk->size, heap, heap->size, next_chunk);
 	if (next_chunk < (char *) heap + heap->size)
 	{
 		neighbour = (struct unused_chunk *) (next_chunk - MCHUNKPTR_SIZE);

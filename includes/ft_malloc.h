@@ -25,13 +25,15 @@
 // Flags and masks
 #define USED_CHUNK 0b001
 #define PREALLOCATED 0b010
-// PREV_USED isn't set for preallocated heap chunks because we
-// don't coallesce them anyway and flemme
+// vvv only for chunks 
 #define PREV_USED 0b100
+// vvv only for heaps
+#define HEAP_SMALL 0b100
 #define SIZE_MASK 0xFFFFFFFFFFFFFFF8
 
 #define IS_USED(value) (value & USED_CHUNK)
 #define IS_PREALLOC(value) (value & PREALLOCATED)
+#define IS_HEAP_SMALL(value) (value & HEAP_SMALL)
 #define IS_PREV_USED(value) (value & PREV_USED)
 
 // Checking the values of SMALL and TINY in case someone fails to do their job
@@ -58,8 +60,6 @@
 /*     fwd      */
 /*     bwd      */
 /*     size     */
-
-//prev_size isn't set for preallocated chunks because useless and flemme
 
 // just the header, we don't need the rest
 // the linked list doesn't loop (for now ?)

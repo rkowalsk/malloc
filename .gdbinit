@@ -1,5 +1,17 @@
 set disassembly-flavor intel
 
+define pheap_list
+	set $h = (struct heap *)$arg0
+	set $i = 0
+	while ($h != 0)
+		printf "[%d] %p size=%lu bwd=%p fwd=%p\n", \
+		       $i, $h, $h->size, $h->bwd, $h->fwd
+		set $h = $h->fwd
+		set $i = $i + 1
+	end
+end
+
+
 define pchunk
 	set var $n = $arg0
 	if $n->size & 0b001 != 0

@@ -35,7 +35,7 @@ bool	coallesce_next(struct unused_chunk **list, struct unused_chunk *chunk)
 		next_chunk->bwd->fwd = next_chunk->fwd;
 	if (*list == next_chunk)
 		*list = next_chunk->fwd;
-	chunk->size += next_chunk->size & SIZE_MASK;
+	chunk->size += (next_chunk->size & SIZE_MASK);
 unmaping:
 	if (lists.mmaped > UNMAP_THRESHOLD &&
 		(chunk->size & SIZE_MASK) == (heap->size & SIZE_MASK) - HEAP_HEADER_SIZE)
@@ -53,24 +53,26 @@ unmaping:
 	return (false);
 }
 
-struct	unused_chunk *coallesce(struct unused_chunk *chunk)
+struct	unused_chunk *coallesce(struct unused_chunk	**list, struct unused_chunk *chunk)
 {
-	struct unused_chunk	**list;
-
-	if (IS_PREALLOC(chunk->size))
-	{
-		if ((chunk->size & SIZE_MASK) <= TINY)
-			list = &lists.tiny;
-		else
-			list = &lists.small;
-	}
-	else
-		list = &lists.large;
 	if (!IS_PREV_USED(chunk->size))
 		chunk = coallesce_previous(list, chunk);
 	if (coallesce_next(list, chunk))
 		return (NULL);
 	return (chunk);
+}
+
+struct unused_chunk **chunk_get_list(struct unused_chunk *chunk)
+{
+	struct heap	*heap;
+
+	heap = get_chunk_heap(chunk);
+	if (!IS_PREALLOC(heap->size))
+		return (&lists.large);
+	else if (IS_HEAP_SMALL(heap->size))
+		return (&lists.small);
+	else
+		return (&lists.tiny);
 }
 
 #ifdef DEV
@@ -80,6 +82,7 @@ struct	unused_chunk *coallesce(struct unused_chunk *chunk)
 #endif
 {
 	struct unused_chunk	*chunk;
+	struct unused_chunk	**list;
 
 	if (!ptr)
 		return;
@@ -87,16 +90,12 @@ struct	unused_chunk *coallesce(struct unused_chunk *chunk)
 		((char *) ptr - (MCHUNKPTR_SIZE + USED_CHUNK_METADATA_SIZE));
 	chunk->size -= USED_CHUNK;
 	pthread_mutex_lock(&mutex);
-	chunk = coallesce(chunk);
+	list = chunk_get_list(chunk);
+	chunk = coallesce(list, chunk);
 	if (chunk)
 	{
 		update_next_neighbour(chunk, 0);
-		if ((chunk->size & SIZE_MASK) <= TINY)
-			insert_into_list(&lists.tiny, chunk);
-		if ((chunk->size & SIZE_MASK) <= SMALL)
-			insert_into_list(&lists.small, chunk);
-		else
-			insert_into_list(&lists.large, chunk);
+		insert_into_list(list, chunk);
 	}
 	pthread_mutex_unlock(&mutex);
 }
