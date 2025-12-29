@@ -29,7 +29,7 @@ HEADERS_DIR = includes
 FLAGS = -Wall -Wextra -Werror -Werror=pointer-arith -fPIC
 
 ifneq ($(DEV),)
-	FLAGS += -DDEV -g -O0 -fsanitize=address -fno-omit-frame-pointer
+	FLAGS += -DDEV -g
 endif
 
 $(NAME): $(LIBFT_FILE) $(OBJS) $(HEADERS)
