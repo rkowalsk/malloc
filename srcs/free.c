@@ -46,8 +46,8 @@ unmaping:
 			heap->bwd->fwd = heap->fwd;
 		if (lists.heaps == heap)
 			lists.heaps = heap->fwd;
-		lists.mmaped -= heap->size;
-		munmap(heap, heap->size);
+		lists.mmaped -= (SIZE_MASK & heap->size);
+		munmap(heap, (SIZE_MASK & heap->size));
 		return (true);
 	}
 	return (false);

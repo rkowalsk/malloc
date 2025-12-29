@@ -5,7 +5,7 @@ struct heap	*get_chunk_heap(struct unused_chunk *chunk)
 	struct heap	*heap = lists.heaps;
 
 	while (heap && ((char *) chunk < (char *) heap
-			|| (char *) chunk > (char *) heap + heap->size))
+			|| (char *) chunk > (char *) heap + (SIZE_MASK & heap->size)))
 		heap = heap->fwd;
 	if (!heap)
 	{
