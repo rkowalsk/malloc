@@ -72,7 +72,7 @@ void	heap_show_alloc_mem(struct heap *heap, bool ex)
 	struct unused_chunk	*chunk;
 	bool				printed_type;
 
-	pthread_mutex_lock(&mutex);
+	// pthread_mutex_lock(&mutex);
 	chunk = (struct unused_chunk *) (((char *) heap) + HEAP_HEADER_SIZE - MCHUNKPTR_SIZE);
 	printed_type = false;
 	while ((char *) chunk + MCHUNKPTR_SIZE < (char *) heap + (SIZE_MASK & heap->size))
@@ -97,7 +97,7 @@ void	heap_show_alloc_mem(struct heap *heap, bool ex)
 		chunk = (struct unused_chunk *)
 			((char *) chunk + (SIZE_MASK & chunk->size));
 	}
-	pthread_mutex_unlock(&mutex);
+	// pthread_mutex_unlock(&mutex);
 }
 
 void	show_alloc_mem_ex(void)
