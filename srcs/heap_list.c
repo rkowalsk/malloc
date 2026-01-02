@@ -10,7 +10,6 @@ struct heap	*get_chunk_heap(struct unused_chunk *chunk)
 	if (!heap)
 	{
 		write(2, "wtf???\n", 7);
-		exit(2);
 	}
 	return (heap);
 }
